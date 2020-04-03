@@ -1,10 +1,10 @@
 import api from '../src/api/api'
 import worklogs from '../src/worklogs/worklogs'
-import configStore from '../src/config/configStore'
+import authenticator from '../src/config/authenticator'
 
 jest.mock('../src/config/configStore', () => jest.requireActual('./mocks/configStore'))
 
-configStore.save({
+authenticator.saveCredentials({
     accountId: 'fakeAccountId',
     tempoToken: 'fakeToken'
 })

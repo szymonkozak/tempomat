@@ -1,11 +1,11 @@
 import api, { GetWorklogsRequest, GetWorklogsResponse, GetUserScheduleRequest, GetUserScheduleResponse } from '../src/api/api'
 import worklogs from '../src/worklogs/worklogs'
-import configStore from '../src/config/configStore'
 import { mockCurrentDate } from './mocks/currentDate'
+import authenticator from '../src/config/authenticator'
 
 jest.mock('../src/config/configStore', () => jest.requireActual('./mocks/configStore'))
 
-configStore.save({
+authenticator.saveCredentials({
     accountId: 'fakeAccountId',
     tempoToken: 'fakeToken'
 })

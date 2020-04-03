@@ -1,4 +1,3 @@
-import configStore from '../config/configStore'
 import api, { IssueEntity, WorklogEntity, GetWorklogsResponse } from '../api/api'
 import * as timeParser from './timeParser'
 import { ParseResult, Interval } from './timeParser'
@@ -7,12 +6,14 @@ import { format, isValid, addDays, parse as fnsParse, startOfMonth, endOfMonth }
 import { ScheduleDetails } from './schedule'
 import * as schedule from './schedule'
 import { appName } from '../appName'
+import authenticator from '../config/authenticator'
+import aliases from '../config/aliases'
 
 const DATE_FORMAT = 'yyyy-MM-dd'
 const START_TIME_FORMAT = 'HH:mm:ss'
 
 export type AddWorklogInput = {
-    issueKey: string
+    issueKeyOrAlias: string
     durationOrInterval: string
     when?: string
     description?: string
@@ -46,8 +47,9 @@ export default {
         if (parseResult.seconds <= 0) {
             throw Error('Error. Hours worked must be larger than 0.')
         }
+        const issueKey = await aliases.getIssueKey(input.issueKeyOrAlias) ?? input.issueKeyOrAlias
         const worklogEntity = await api.addWorklog({
-            issueKey: input.issueKey,
+            issueKey: issueKey,
             timeSpentSeconds: parseResult.seconds,
             startDate: format(parseWhenArg(now, input.when), DATE_FORMAT),
             startTime: startTime(parseResult, input.startTime, now),
@@ -70,7 +72,7 @@ export default {
 
     async getUserWorklogs(when?: string): Promise<UserWorklogs> {
         await checkToken()
-        const config = await configStore.read()
+        const credentials = await authenticator.getCredentials()
         const now = time.now()
         const date = parseWhenArg(now, when)
         const formattedDate = format(date, DATE_FORMAT)
@@ -85,16 +87,16 @@ export default {
             worklogsResponse.results,
             scheduleResponse.results,
             formattedDate,
-            config.accountId
+            credentials.accountId
         )
         return { worklogs, date, scheduleDetails }
     }
 }
 
 async function generateWorklogs(worklogsResponse: GetWorklogsResponse, formattedDate: string): Promise<Worklog[]> {
-    const config = await configStore.read()
+    const credentails = await authenticator.getCredentials()
     return worklogsResponse.results
-        .filter((e: WorklogEntity) => e.author.accountId === config.accountId && e.startDate === formattedDate)
+        .filter((e: WorklogEntity) => e.author.accountId === credentails.accountId && e.startDate === formattedDate)
         .map((e: WorklogEntity) => toWorklog(e))
 }
 
@@ -110,7 +112,7 @@ function toWorklog(entity: WorklogEntity) {
 }
 
 async function checkToken() {
-    const isTokenSet = await configStore.hasTempoToken()
+    const isTokenSet = await authenticator.hasTempoToken()
     if (!isTokenSet) {
         throw Error('Tempo token not set. Setup tempomat by `tempo setup` command.')
     }

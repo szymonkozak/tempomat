@@ -1,18 +1,18 @@
 import { Config } from '../../src/config/configStore'
 
-let configJson = ''
+let savedConfig: Config = {
+    tempoToken: undefined,
+    accountId: undefined,
+    aliases: undefined
+}
 
 export default {
+
     async save(config: Config) {
-        configJson = JSON.stringify(config)
+        savedConfig = config
     },
 
     async read(): Promise<Config> {
-        return new Promise((resolve, reject) => resolve(JSON.parse(configJson)))
-    },
-
-    async hasTempoToken() {
-        const config = await this.read()
-        return config.tempoToken !== undefined
+        return new Promise((resolve, reject) => resolve(savedConfig))
     }
 }

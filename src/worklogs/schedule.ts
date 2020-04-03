@@ -18,7 +18,7 @@ export function createScheduleDetails(
     worklogsResults: WorklogEntity[],
     scheduleResults: ScheduleEntity[],
     formattedSelectedDate: string,
-    accountId: string
+    accountId?: string
 ): ScheduleDetails {
     const now = time.now()
     const formattedNowDate = format(now, DATE_FORMAT)
