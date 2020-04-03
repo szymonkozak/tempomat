@@ -1,11 +1,12 @@
 import api from '../src/api/api'
 import worklogs from '../src/worklogs/worklogs'
-import configStore from '../src/config/configStore'
 import { mockCurrentDate } from './mocks/currentDate'
+import authenticator from '../src/config/authenticator'
+import aliases from '../src/config/aliases'
 
 jest.mock('../src/config/configStore', () => jest.requireActual('./mocks/configStore'))
 
-configStore.save({
+authenticator.saveCredentials({
     accountId: 'fakeAccountId',
     tempoToken: 'fakeToken'
 })
@@ -21,7 +22,7 @@ describe('adds a worklog', () => {
     describe('by duration', () => {
         test('1h10m at today', async () => {
             await worklogs.addWorklog({
-                issueKey: 'ABC-123',
+                issueKeyOrAlias: 'ABC-123',
                 durationOrInterval: '1h10m',
                 when: undefined
             })
@@ -36,7 +37,7 @@ describe('adds a worklog', () => {
 
         test('1h10m at today from 9:30', async () => {
             await worklogs.addWorklog({
-                issueKey: 'ABC-123',
+                issueKeyOrAlias: 'ABC-123',
                 durationOrInterval: '1h10m',
                 startTime: '9:30',
                 when: undefined
@@ -52,7 +53,7 @@ describe('adds a worklog', () => {
 
         test('20m at yesterday from "9', async () => {
             await worklogs.addWorklog({
-                issueKey: 'ABC-123',
+                issueKeyOrAlias: 'ABC-123',
                 durationOrInterval: '20m',
                 startTime: '9',
                 when: 'y'
@@ -68,7 +69,7 @@ describe('adds a worklog', () => {
 
         test('5h20m at yesterday from 3.00', async () => {
             await worklogs.addWorklog({
-                issueKey: 'ABC-123',
+                issueKeyOrAlias: 'ABC-123',
                 durationOrInterval: '5h20m',
                 startTime: '3.00',
                 when: 'yesterday'
@@ -84,7 +85,7 @@ describe('adds a worklog', () => {
 
         test('1h10m at specific date', async () => {
             await worklogs.addWorklog({
-                issueKey: 'ABC-123',
+                issueKeyOrAlias: 'ABC-123',
                 durationOrInterval: '1h10m',
                 when: '2020-03-08'
             })
@@ -101,7 +102,7 @@ describe('adds a worklog', () => {
     describe('by interval', () => {
         test('11:30-13 at today', async () => {
             await worklogs.addWorklog({
-                issueKey: 'ABC-123',
+                issueKeyOrAlias: 'ABC-123',
                 durationOrInterval: '11:30-13',
                 when: undefined
             })
@@ -116,7 +117,7 @@ describe('adds a worklog', () => {
 
         test('23:30-00:30 at yesterday', async () => {
             await worklogs.addWorklog({
-                issueKey: 'ABC-123',
+                issueKeyOrAlias: 'ABC-123',
                 durationOrInterval: '23:30-00:30',
                 when: 'y'
             })
@@ -131,7 +132,7 @@ describe('adds a worklog', () => {
 
         test('0:00-5 at yesterday', async () => {
             await worklogs.addWorklog({
-                issueKey: 'ABC-123',
+                issueKeyOrAlias: 'ABC-123',
                 durationOrInterval: '0:00-5',
                 when: 'yesterday'
             })
@@ -146,7 +147,7 @@ describe('adds a worklog', () => {
 
         test('11-13 at specific date', async () => {
             await worklogs.addWorklog({
-                issueKey: 'ABC-123',
+                issueKeyOrAlias: 'ABC-123',
                 durationOrInterval: '11-13',
                 when: '2020-03-08'
             })
@@ -162,7 +163,25 @@ describe('adds a worklog', () => {
 
     test('with description', async () => {
         await worklogs.addWorklog({
+            issueKeyOrAlias: 'ABC-123',
+            durationOrInterval: '1h',
+            description: 'foo bar'
+        })
+
+        expect(addWorklogMock).toHaveBeenCalledWith({
             issueKey: 'ABC-123',
+            timeSpentSeconds: 3600,
+            startDate: '2020-02-28',
+            startTime: '12:00:00',
+            description: 'foo bar'
+        })
+    })
+
+    test('with alias', async () => {
+        aliases.set('lunch', 'ABC-123')
+
+        await worklogs.addWorklog({
+            issueKeyOrAlias: 'lunch',
             durationOrInterval: '1h',
             description: 'foo bar'
         })

@@ -49,6 +49,9 @@ Succesfully deleted worklog 123458. Deleted worklog details: ABC-4321, 14:00-14:
 * [`tempo list [WHEN]`](#tempo-list-when)
 * [`tempo delete WORKLOG_ID`](#tempo-delete-worklog_id)
 * [`tempo autocomplete [SHELL]`](#tempo-autocomplete-shell)
+* [`tempo alias:set ALIAS_NAME ISSUE_KEY`](#tempo-aliasset-alias_name-issue_key)
+* [`tempo alias:delete ALIAS_NAME`](#tempo-aliasdelete-alias_name)
+* [`tempo alias:list`](#tempo-aliaslist)
 
 ### `tempo help [COMMAND]`
 
@@ -87,7 +90,7 @@ USAGE
   $ tempo log ISSUE_KEY DURATION_OR_INTERVAL [WHEN]
 
 ARGUMENTS
-  ISSUE_KEY             task key, like abc-123
+  ISSUE_KEY             issue key, like abc-123 or task alias
   DURATION_OR_INTERVAL  worklog duration (e.g 15m) or interval (e.g 11:30-14)
 
   WHEN                  date to add worklog, defaulted to today
@@ -193,6 +196,58 @@ EXAMPLES
   $ tempo autocomplete bash
   $ tempo autocomplete zsh
   $ tempo autocomplete --refresh-cache
+```
+
+### `tempo alias:set ALIAS_NAME ISSUE_KEY`
+
+set issue key alias, then alias can be used instead of issue key
+
+```
+USAGE
+  $ tempo alias:set ALIAS_NAME ISSUE_KEY
+
+ARGUMENTS
+  ALIAS_NAME
+  ISSUE_KEY   issue key, like abc-123
+
+OPTIONS
+  -h, --help  show CLI help
+  --debug
+
+EXAMPLE
+  tempo alias:set lunch abc-123
+```
+
+### `tempo alias:delete ALIAS_NAME`
+
+delete issue key alias
+
+```
+USAGE
+  $ tempo alias:delete ALIAS_NAME
+
+OPTIONS
+  -h, --help  show CLI help
+  --debug
+
+EXAMPLE
+  tempo alias:delete lunch
+```
+
+### `tempo alias:list`
+
+print aliases list
+
+```
+USAGE
+  $ tempo alias:list
+
+OPTIONS
+  -h, --help  show CLI help
+  --debug
+
+EXAMPLE
+  tempo alias:list
 ```
 
 ## License

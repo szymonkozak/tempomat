@@ -1,4 +1,4 @@
-import configStore, { Config } from '../config/configStore'
+import authenticator from '../config/authenticator'
 import { AxiosError, AxiosResponse } from 'axios'
 import tempoAxios from './tempoAxios'
 import flags from '../globalFlags'
@@ -58,8 +58,8 @@ export type IssueEntity = {
 export default {
 
     async addWorklog(request: AddWorklogRequest): Promise<WorklogEntity> {
-        const config = await configStore.read()
-        const body = { ...request, authorAccountId: config.accountId }
+        const credentials = await authenticator.getCredentials()
+        const body = { ...request, authorAccountId: credentials.accountId }
         return execute(async () => {
             const response = await tempoAxios.post('/worklogs', body)
             debugLog(response)
@@ -83,13 +83,13 @@ export default {
     },
 
     async getWorklogs(request: GetWorklogsRequest): Promise<GetWorklogsResponse> {
-        const config = await configStore.read()
+        const credentials = await authenticator.getCredentials()
         return execute(async () => {
-            const response = await tempoAxios.get(`/worklogs/user/${config.accountId}`, {
+            const response = await tempoAxios.get(`/worklogs/user/${credentials.accountId}`, {
                 params: { from: request.fromDate, to: request.toDate, limit: 1000 }
             })
             debugLog(response)
-            const allResults = await fetchPaginatedResults<WorklogEntity>(response.data.results, response, config)
+            const allResults = await fetchPaginatedResults<WorklogEntity>(response.data.results, response)
             return { results: allResults }
         })
     },
@@ -107,12 +107,12 @@ export default {
     }
 }
 
-async function fetchPaginatedResults<T>(acc: T[], response: AxiosResponse, config: Config): Promise<T[]> {
+async function fetchPaginatedResults<T>(acc: T[], response: AxiosResponse): Promise<T[]> {
     const nextPageUrl = response.data.metadata.next
     if (nextPageUrl) {
         const response = await tempoAxios.get(nextPageUrl)
         debugLog(response)
-        const nextPageResults = await fetchPaginatedResults<T>(response.data.results, response, config)
+        const nextPageResults = await fetchPaginatedResults<T>(response.data.results, response)
         return acc.concat(nextPageResults)
     } else {
         return acc

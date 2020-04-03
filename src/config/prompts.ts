@@ -1,6 +1,6 @@
-import { Config } from './configStore'
 import cli from 'cli-ux'
 import { trimIndent } from '../trimIndent'
+import { Credentials } from './authenticator'
 
 type ProfileInfo = {
     accountId: string;
@@ -9,7 +9,7 @@ type ProfileInfo = {
 
 export default {
 
-    async promptConfig(): Promise<Config> {
+    async promptCredentials(): Promise<Credentials> {
         const profileInfo = await promptProfileInfo()
         const tempoToken = await promptTempoToken(profileInfo.hostname)
 

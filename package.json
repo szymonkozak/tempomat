@@ -30,6 +30,9 @@
     "tempo.io"
   ],
   "oclif": {
+    "topics": {
+      "alias": { "description": "manage issue key aliases" }
+    },
     "commands": "./dist/commands",
     "bin": "tempo",
     "plugins": [

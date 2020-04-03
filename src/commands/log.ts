@@ -35,8 +35,8 @@ export default class Log extends Command {
 
   static args = [
       {
-          name: 'issue_key',
-          description: 'task key, like abc-123',
+          name: 'issue_key_or_alias',
+          description: 'issue key, like abc-123 or task alias',
           required: true
       },
       {
@@ -57,7 +57,7 @@ export default class Log extends Command {
       const { args, flags } = this.parse(Log)
       globalFlags.debug = flags.debug
       tempo.addWorklog({
-          issueKey: args.issue_key,
+          issueKeyOrAlias: args.issue_key_or_alias,
           durationOrInterval: args.duration_or_interval,
           when: args.when,
           description: flags.description,

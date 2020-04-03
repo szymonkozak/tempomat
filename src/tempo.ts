@@ -1,4 +1,4 @@
-import configStore from './config/configStore'
+import authenticator from './config/authenticator'
 import worklogs, { AddWorklogInput } from './worklogs/worklogs'
 import prompts from './config/prompts'
 import * as worklogsTable from './worklogs/worklogsTable'
@@ -6,13 +6,14 @@ import chalk from 'chalk'
 import { appName } from './appName'
 import { trimIndent } from './trimIndent'
 import cli from 'cli-ux'
+import aliases from './config/aliases'
 
 export default {
 
     async setup() {
         try {
-            const config = await prompts.promptConfig()
-            configStore.save(config)
+            const config = await prompts.promptCredentials()
+            await authenticator.saveCredentials(config)
             console.log(chalk.greenBright('Setup completed successfully. Use --help to list available commands.'))
             const aliasesCommand = chalk.bold.blue(`printf "alias tl='${appName} l'\\nalias tls='${appName} ls'\\nalias td='${appName} d'" >> ~/.zshrc; source ~/.zshrc`)
             const autocompleteCommand = chalk.bold.blue('tempo autocomplete')
@@ -59,6 +60,26 @@ export default {
             cli.action.stop('Done.')
             const table = worklogsTable.render(userWorklogs, verbose)
             console.log(table.toString())
+        })
+    },
+
+    async setAlias(aliasName: string, issueKey: string) {
+        execute(async () => {
+            await aliases.set(aliasName, issueKey)
+        })
+    },
+
+    async deleteAlias(aliasName: string) {
+        execute(async () => {
+            await aliases.delete(aliasName)
+        })
+    },
+
+    async listAliases() {
+        const all = await aliases.all()
+        /* eslint-disable no-unused-expressions */
+        all?.forEach((value, key, _) => {
+            console.log(`${key} => ${value}`)
         })
     }
 }
