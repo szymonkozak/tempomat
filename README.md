@@ -45,7 +45,7 @@ Succesfully deleted worklog 123458. Deleted worklog details: ABC-4321, 14:00-14:
 
 * [`tempo help [COMMAND]`](#tempo-help-command)
 * [`tempo setup`](#tempo-setup)
-* [`tempo log ISSUE_KEY DURATION_OR_INTERVAL [WHEN]`](#tempo-log-issue_key-duration_or_interval-when)
+* [`tempo log ISSUE_KEY_OR_ALIAS DURATION_OR_INTERVAL [WHEN]`](#tempo-log-issue_key_or_alias-duration_or_interval-when)
 * [`tempo list [WHEN]`](#tempo-list-when)
 * [`tempo delete WORKLOG_ID`](#tempo-delete-worklog_id)
 * [`tempo autocomplete [SHELL]`](#tempo-autocomplete-shell)
@@ -81,16 +81,16 @@ EXAMPLE
 ```
 
 
-### `tempo log ISSUE_KEY DURATION_OR_INTERVAL [WHEN]`
+### `tempo log ISSUE_KEY_OR_ALIAS DURATION_OR_INTERVAL [WHEN]`
 
 [or l], add a new worklog using duration or interval (abc-123 15m or abc-123 11-12:30)
 
 ```
 USAGE
-  $ tempo log ISSUE_KEY DURATION_OR_INTERVAL [WHEN]
+  $ tempo log ISSUE_KEY_OR_ALIAS DURATION_OR_INTERVAL [WHEN]
 
 ARGUMENTS
-  ISSUE_KEY             issue key, like abc-123 or task alias
+  ISSUE_KEY_OR_ALIAS    issue key, like abc-123 or alias
   DURATION_OR_INTERVAL  worklog duration (e.g 15m) or interval (e.g 11:30-14)
 
   WHEN                  date to add worklog, defaulted to today

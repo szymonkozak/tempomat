@@ -36,7 +36,7 @@ export default class Log extends Command {
   static args = [
       {
           name: 'issue_key_or_alias',
-          description: 'issue key, like abc-123 or task alias',
+          description: 'issue key, like abc-123 or alias',
           required: true
       },
       {
