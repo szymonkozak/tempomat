@@ -12,8 +12,8 @@ export default {
 
     async setup() {
         try {
-            const config = await prompts.promptCredentials()
-            await authenticator.saveCredentials(config)
+            const credentials = await prompts.promptCredentials()
+            await authenticator.saveCredentials(credentials)
             console.log(chalk.greenBright('Setup completed successfully. Use --help to list available commands.'))
             const aliasesCommand = chalk.bold.blue(`printf "alias tl='${appName} l'\\nalias tls='${appName} ls'\\nalias td='${appName} d'" >> ~/.zshrc; source ~/.zshrc`)
             const autocompleteCommand = chalk.bold.blue('tempo autocomplete')

@@ -1,8 +1,8 @@
 import configStore from './configStore'
 
 export type Credentials = {
-    tempoToken: string;
-    accountId: string;
+    tempoToken?: string;
+    accountId?: string;
 }
 
 export default {
@@ -14,7 +14,7 @@ export default {
         await configStore.save(config)
     },
 
-    async getCredentials() {
+    async getCredentials(): Promise<Credentials> {
         const config = await configStore.read()
         return {
             tempoToken: config.tempoToken,
@@ -22,7 +22,7 @@ export default {
         }
     },
 
-    async hasTempoToken() {
+    async hasTempoToken(): Promise<boolean> {
         try {
             const config = await configStore.read()
             return config.tempoToken !== undefined
