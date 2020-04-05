@@ -7,6 +7,9 @@ import { appName } from './appName'
 import { trimIndent } from './trimIndent'
 import cli from 'cli-ux'
 import aliases from './config/aliases'
+import trackers, { StartTrackerInput, PauseTrackerInput, StopTrackerInput, ResumeTrackerInput } from './trackers/trackers'
+import { Tracker } from './config/trackerStore'
+import { lightFormat as fnsLightFormat, differenceInMinutes } from 'date-fns'
 
 export default {
 
@@ -36,8 +39,8 @@ export default {
         }
     },
 
-    async addWorklog(input: AddWorklogInput) {
-        execute(async () => {
+    async addWorklog(input: AddWorklogInput): Promise<boolean> {
+        return execute(async () => {
             cli.action.start('Logging time')
             const worklog = await worklogs.addWorklog(input)
             cli.action.stop('Done.')
@@ -81,11 +84,87 @@ export default {
         all?.forEach((value, key, _) => {
             console.log(`${key} => ${value}`)
         })
+    },
+
+    async startTracker(input: StartTrackerInput) {
+        await execute(async () => {
+            const tracker = await trackers.startTracker(input)
+            if (!tracker) {
+                console.log(chalk.redBright(`Tracker for ${input.issueKeyOrAlias} already exists.`))
+                return
+            }
+            console.log(`Started tracker for ${input.issueKeyOrAlias}.`)
+        })
+    },
+
+    async resumeTracker(input: ResumeTrackerInput) {
+        await execute(async () => {
+            const tracker = await trackers.resumeTracker(input)
+            if (!tracker) {
+                console.log(chalk.redBright(`Tracker for ${input.issueKeyOrAlias} does not exists.`))
+                return
+            }
+            console.log(`Resumed tracker for ${input.issueKeyOrAlias}.`)
+        })
+    },
+
+    async pauseTracker(input: PauseTrackerInput) {
+        await execute(async () => {
+            const tracker = await trackers.pauseTracker(input)
+            if (!tracker) {
+                console.log(chalk.redBright(`Tracker for ${input.issueKeyOrAlias} does not exists.`))
+                return
+            }
+            console.log(`Paused tracker for ${input.issueKeyOrAlias}.`)
+        })
+    },
+
+    async stopTracker(input: StopTrackerInput) {
+        await execute(async () => {
+            let tracker = await trackers.stopTracker(input)
+            if (!tracker) {
+                console.log(`Tracker for ${input.issueKeyOrAlias} does not exists.`)
+                return
+            }
+
+            const intervalsWithInputs = createWorklogInputs(tracker)
+            if (intervalsWithInputs.length === 0) {
+                console.log('There are no intervals with minmal length of 0 minutes.')
+                await trackers.removeTracker({ issueKeyOrAlias: tracker.issueKey })
+                return
+            }
+
+            console.log('Logging tracker intervals')
+            let allSucceeded = true
+            for (const intervalWithInput of intervalsWithInputs) {
+                const interval = intervalWithInput[0]
+                const input = intervalWithInput[1]
+                if (await this.addWorklog(input)) {
+                    tracker = await trackers.removeInterval(tracker, interval)
+                } else {
+                    allSucceeded = false
+                }
+            }
+
+            if (!allSucceeded) {
+                console.log(chalk.redBright('Failed to log some parts of worklog.'))
+                return
+            }
+
+            await trackers.removeTracker({ issueKeyOrAlias: tracker.issueKey })
+            console.log(chalk.greenBright('Logged all worklogs.'))
+        })
     }
 }
 
-async function execute(action: () => Promise<void>): Promise<void> {
-    return action().catch((e) => showError(e))
+async function execute(action: () => Promise<void>): Promise<boolean> {
+    try {
+        await action()
+        return true
+    } catch (e) {
+        showError(e)
+        return false
+    }
 }
 
 function showError(e: Error) {
@@ -101,4 +180,19 @@ async function deleteWorklog(worklogIdInput: string): Promise<void> {
         chalk.greenBright(`Succesfully deleted worklog ${chalk.yellow(worklog.id)}.`),
         `Deleted worklog details: ${worklog.issueKey}, ${worklog.interval?.startTime}-${worklog.interval?.endTime} (${worklog.duration})`
     )
+}
+
+function createWorklogInputs(tracker: Tracker): [Interval, AddWorklogInput][] {
+    return tracker.intervals.map(interval => {
+        return [
+            interval,
+            {
+                issueKeyOrAlias: tracker.issueKey,
+                description: tracker.description,
+                when: fnsLightFormat(interval.start, 'yyyy-MM-dd'),
+                startTime: fnsLightFormat(interval.start, 'HH:mm'),
+                durationOrInterval: `${differenceInMinutes(interval.end, interval.start)}m`
+            }
+        ]
+    })
 }

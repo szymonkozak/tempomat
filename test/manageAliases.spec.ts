@@ -20,7 +20,8 @@ test('add and remove alias', async () => {
             aliases: new Map<string, string>([
                 ['lunch', 'ABC-123'],
                 ['foo', 'ABC-321']
-            ])
+            ]),
+            trackers: undefined
         }
     )
 
@@ -32,7 +33,8 @@ test('add and remove alias', async () => {
             tempoToken: 'fakeToken',
             aliases: new Map<string, string>([
                 ['lunch', 'ABC-123']
-            ])
+            ]),
+            trackers: undefined
         }
     )
 

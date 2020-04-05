@@ -45,7 +45,7 @@ export default {
             throw Error(`Error with parsing ${input.durationOrInterval}. Try something like 1h10m or 11-12:30. See ${appName} log --help for more examples.`)
         }
         if (parseResult.seconds <= 0) {
-            throw Error('Error. Hours worked must be larger than 0.')
+            throw Error('Error. Minutes worked must be larger than 0.')
         }
         const issueKey = await aliases.getIssueKey(input.issueKeyOrAlias)
         const worklogEntity = await api.addWorklog({

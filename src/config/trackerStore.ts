@@ -1,10 +1,18 @@
-import configStore from "./configStore"
+import configStore from './configStore'
 
 export type Tracker = {
     issueKey: string
     description?: string
-    lastResumeTime: number
+    activeTimestamp: number
+    state: TrackerState
     intervals: Interval[]
+}
+
+export enum TrackerState {
+    Started,
+    Resumed,
+    Paused,
+    Stopped
 }
 
 export type NewTracker = {
@@ -26,7 +34,8 @@ export default {
         const tracker = {
             issueKey: newTracker.issueKey,
             description: newTracker.description,
-            lastResumeTime: newTracker.startTime,
+            activeTimestamp: newTracker.startTime,
+            state: TrackerState.Started,
             intervals: []
         }
         config.trackers.set(newTracker.issueKey, tracker)
@@ -55,8 +64,10 @@ export default {
             return undefined
         }
         const config = await configStore.read()
-        config.trackers?.delete(issueKey)
+        if (!config.trackers?.delete(issueKey)) {
+            return undefined
+        }
         await configStore.save(config)
         return tracker
-    },
+    }
 }
