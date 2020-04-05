@@ -4,14 +4,11 @@ import tempo from '../../tempo'
 import globalFlags from '../../globalFlags'
 
 export default class Delete extends Command {
-    static description = '[or delete], delete a tracker'
+    static description = 'delete a tracker'
 
     static examples = [
-        `${appName} tracker:delete abc-123`,
-        `${appName} delete abc-123`
+        `${appName} tracker:delete abc-123`
     ]
-
-    static aliases = ['delete']
 
     static flags = {
         help: flags.help({ char: 'h' }),
