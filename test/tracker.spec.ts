@@ -511,4 +511,41 @@ describe('tracker', () => {
                 }]
         })
     })
+
+    test('can be deleted for an issue', async () => {
+        await clearStore()
+
+        await tempo.startTracker({
+            issueKeyOrAlias: 'ABC-123',
+            now: baseDate
+        })
+        await tempo.deleteTracker({ issueKeyOrAlias: 'ABC-123' })
+
+        expect(await getTracker('ABC-123')).toBeUndefined()
+    })
+
+    test('can be deleted for an alias', async () => {
+        await clearStore()
+        await aliases.set('lunch', 'ABC-123')
+
+        await tempo.startTracker({
+            issueKeyOrAlias: 'ABC-123',
+            now: baseDate
+        })
+        await tempo.deleteTracker({ issueKeyOrAlias: 'lunch' })
+
+        expect(await getTracker('ABC-123')).toBeUndefined()
+    })
+
+    test('is not deleted for different key', async () => {
+        await clearStore()
+
+        await tempo.startTracker({
+            issueKeyOrAlias: 'ABC-123',
+            now: baseDate
+        })
+        await tempo.deleteTracker({ issueKeyOrAlias: 'ABC-124' })
+
+        expect(await getTracker('ABC-123')).not.toBeUndefined()
+    })
 })

@@ -23,7 +23,7 @@ export type StopTrackerInput = {
     now: Date
 }
 
-export type RemoveTrackerInput = {
+export type DeleteTrackerInput = {
     issueKeyOrAlias: string
 }
 
@@ -101,7 +101,7 @@ export default {
         return tracker
     },
 
-    async removeTracker(input: RemoveTrackerInput): Promise<Tracker | undefined> {
+    async deleteTracker(input: DeleteTrackerInput): Promise<Tracker | undefined> {
         const issueKey = await aliases.getIssueKey(input.issueKeyOrAlias)
         return trackerStore.removeTracker(issueKey)
     },

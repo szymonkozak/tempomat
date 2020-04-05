@@ -7,7 +7,7 @@ import { appName } from './appName'
 import { trimIndent } from './trimIndent'
 import cli from 'cli-ux'
 import aliases from './config/aliases'
-import trackers, { StartTrackerInput, PauseTrackerInput, StopTrackerInput, ResumeTrackerInput } from './trackers/trackers'
+import trackers, { StartTrackerInput, PauseTrackerInput, StopTrackerInput, ResumeTrackerInput, DeleteTrackerInput } from './trackers/trackers'
 import { Tracker } from './config/trackerStore'
 import { lightFormat as fnsLightFormat, differenceInMinutes } from 'date-fns'
 
@@ -123,14 +123,14 @@ export default {
         await execute(async () => {
             let tracker = await trackers.stopTracker(input)
             if (!tracker) {
-                console.log(`Tracker for ${input.issueKeyOrAlias} does not exists.`)
+                console.log(chalk.redBright(`Tracker for ${input.issueKeyOrAlias} does not exists.`))
                 return
             }
 
             const intervalsWithInputs = createWorklogInputs(tracker)
             if (intervalsWithInputs.length === 0) {
                 console.log('There are no intervals with minmal length of 0 minutes.')
-                await trackers.removeTracker({ issueKeyOrAlias: tracker.issueKey })
+                await trackers.deleteTracker({ issueKeyOrAlias: tracker.issueKey })
                 return
             }
 
@@ -151,8 +151,19 @@ export default {
                 return
             }
 
-            await trackers.removeTracker({ issueKeyOrAlias: tracker.issueKey })
+            await trackers.deleteTracker({ issueKeyOrAlias: tracker.issueKey })
             console.log(chalk.greenBright('Logged all worklogs.'))
+        })
+    },
+
+    async deleteTracker(input: DeleteTrackerInput) {
+        await execute(async () => {
+            const tracker = await trackers.deleteTracker(input)
+            if (!tracker) {
+                console.log(chalk.redBright(`Tracker for ${input.issueKeyOrAlias} does not exists.`))
+                return
+            }
+            console.log(`Deleted tracker for ${input.issueKeyOrAlias}.`)
         })
     }
 }
