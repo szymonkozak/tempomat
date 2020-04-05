@@ -30,7 +30,7 @@ export type DeleteTrackerInput = {
 export default {
 
     async startTracker(input: StartTrackerInput): Promise<Tracker | undefined> {
-        const issueKey = await aliases.getIssueKey(input.issueKeyOrAlias)
+        const issueKey = await aliases.getIssueKey(input.issueKeyOrAlias) ?? input.issueKeyOrAlias
         return trackerStore.createTracker({
             issueKey: issueKey,
             description: input.description,
@@ -39,7 +39,7 @@ export default {
     },
 
     async resumeTracker(input: ResumeTrackerInput): Promise<Tracker | undefined> {
-        const issueKey = await aliases.getIssueKey(input.issueKeyOrAlias)
+        const issueKey = await aliases.getIssueKey(input.issueKeyOrAlias) ?? input.issueKeyOrAlias
         const tracker = await trackerStore.getTracker(issueKey)
         if (!tracker) {
             return undefined
@@ -59,7 +59,7 @@ export default {
     },
 
     async pauseTracker(input: PauseTrackerInput): Promise<Tracker | undefined> {
-        const issueKey = await aliases.getIssueKey(input.issueKeyOrAlias)
+        const issueKey = await aliases.getIssueKey(input.issueKeyOrAlias) ?? input.issueKeyOrAlias
         const tracker = await trackerStore.getTracker(issueKey)
         if (!tracker) {
             return undefined
@@ -102,7 +102,7 @@ export default {
     },
 
     async deleteTracker(input: DeleteTrackerInput): Promise<Tracker | undefined> {
-        const issueKey = await aliases.getIssueKey(input.issueKeyOrAlias)
+        const issueKey = await aliases.getIssueKey(input.issueKeyOrAlias) ?? input.issueKeyOrAlias
         return trackerStore.removeTracker(issueKey)
     },
 

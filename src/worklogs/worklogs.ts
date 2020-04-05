@@ -47,7 +47,7 @@ export default {
         if (parseResult.seconds <= 0) {
             throw Error('Error. Minutes worked must be larger than 0.')
         }
-        const issueKey = await aliases.getIssueKey(input.issueKeyOrAlias)
+        const issueKey = await aliases.getIssueKey(input.issueKeyOrAlias) ?? input.issueKeyOrAlias
         const worklogEntity = await api.addWorklog({
             issueKey: issueKey,
             timeSpentSeconds: parseResult.seconds,

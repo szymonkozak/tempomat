@@ -2,9 +2,9 @@ import configStore from './configStore'
 
 export default {
 
-    async getIssueKey(issueKeyOrAlias: string) {
+    async getIssueKey(aliasName: string): Promise<string | undefined> {
         const config = await configStore.read()
-        return config.aliases?.get(issueKeyOrAlias) ?? issueKeyOrAlias
+        return config.aliases?.get(aliasName)
     },
 
     async set(aliasName: string, issueKey: string) {
