@@ -12,7 +12,7 @@ export default class Pause extends Command {
         `${appName} pause abc-123`
     ]
 
-    static aliases = ['[pause]']
+    static aliases = ['pause']
 
     static flags = {
         help: flags.help({ char: 'h' }),
