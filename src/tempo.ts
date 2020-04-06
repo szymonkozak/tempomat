@@ -9,6 +9,7 @@ import cli from 'cli-ux'
 import aliases from './config/aliases'
 import trackers, { StartTrackerInput, PauseTrackerInput, StopTrackerInput, ResumeTrackerInput, DeleteTrackerInput } from './trackers/trackers'
 import { Tracker } from './config/trackerStore'
+import * as trackersTable from './trackers/trackersTable'
 import { lightFormat as fnsLightFormat, differenceInMinutes } from 'date-fns'
 
 export default {
@@ -164,6 +165,17 @@ export default {
                 return
             }
             console.log(`Deleted tracker for ${input.issueKeyOrAlias}.`)
+        })
+    },
+
+    async listTrackers(now: Date) {
+        execute(async () => {
+            cli.action.start('Loading trackers')
+            const userTrackers = await trackers.getTrackers()
+            cli.action.stop('Done.')
+            for (const tracker of userTrackers) {
+                console.log(trackersTable.render(tracker, now).toString())
+            }
         })
     }
 }

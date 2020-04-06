@@ -115,6 +115,10 @@ export default {
             state: tracker.state,
             intervals: newIntervals
         })
+    },
+
+    async getTrackers(): Promise<Tracker[]> {
+        return trackerStore.getTrackers()
     }
 }
 

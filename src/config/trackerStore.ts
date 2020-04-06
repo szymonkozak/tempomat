@@ -69,5 +69,15 @@ export default {
         }
         await configStore.save(config)
         return tracker
+    },
+
+    async getTrackers(): Promise<Tracker[]> {
+        const config = await configStore.read()
+        const maybeTrackers = config.trackers?.values()
+        if (maybeTrackers) {
+            return [...maybeTrackers]
+        } else {
+            return []
+        }
     }
 }
