@@ -18,7 +18,7 @@ export default class Start extends Command {
     static flags = {
         help: flags.help({ char: 'h' }),
         debug: flags.boolean(),
-        description: flags.string({ char: 'd', description: 'descritpion for worklong once tracker is stopped' })
+        description: flags.string({ char: 'd', description: 'description for worklng once tracker is stopped' })
     }
 
     static args = [

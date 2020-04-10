@@ -18,7 +18,7 @@ export default class Stop extends Command {
     static flags = {
         help: flags.help({ char: 'h' }),
         debug: flags.boolean(),
-        description: flags.string({ char: 'd', description: 'descritpion for worklong' })
+        description: flags.string({ char: 'd', description: 'description for worklog' })
     }
 
     static args = [
