@@ -28,12 +28,11 @@ export default class Pause extends Command {
     ]
 
     async run() {
-        const now = time.now()
         const { args, flags } = this.parse(Pause)
         globalFlags.debug = flags.debug
         tempo.pauseTracker({
             issueKeyOrAlias: args.issue_key_or_alias,
-            now: now
+            now: time.now()
         })
     }
 }

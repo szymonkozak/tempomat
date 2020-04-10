@@ -28,12 +28,11 @@ export default class Resume extends Command {
     ]
 
     async run() {
-        const now = time.now()
         const { args, flags } = this.parse(Resume)
         globalFlags.debug = flags.debug
         tempo.resumeTracker({
             issueKeyOrAlias: args.issue_key_or_alias,
-            now: now
+            now: time.now()
         })
     }
 }
