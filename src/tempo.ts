@@ -94,7 +94,7 @@ export default {
                 console.log(chalk.redBright(`Tracker for ${input.issueKeyOrAlias} already exists.`))
                 return
             }
-            console.log(`Started tracker for ${input.issueKeyOrAlias}.`)
+            console.log(`Started tracker for ${tracker.issueKey}.`)
         })
     },
 
@@ -105,7 +105,7 @@ export default {
                 console.log(chalk.redBright(`Tracker for ${input.issueKeyOrAlias} does not exists.`))
                 return
             }
-            console.log(`Resumed tracker for ${input.issueKeyOrAlias}.`)
+            console.log(`Resumed tracker for ${tracker.issueKey}.`)
         })
     },
 
@@ -116,7 +116,7 @@ export default {
                 console.log(chalk.redBright(`Tracker for ${input.issueKeyOrAlias} does not exists.`))
                 return
             }
-            console.log(`Paused tracker for ${input.issueKeyOrAlias}.`)
+            console.log(`Paused tracker for ${tracker.issueKey}.`)
         })
     },
 
@@ -164,15 +164,13 @@ export default {
                 console.log(chalk.redBright(`Tracker for ${input.issueKeyOrAlias} does not exists.`))
                 return
             }
-            console.log(`Deleted tracker for ${input.issueKeyOrAlias}.`)
+            console.log(`Deleted tracker for ${tracker.issueKey}.`)
         })
     },
 
     async listTrackers(now: Date) {
         execute(async () => {
-            cli.action.start('Loading trackers')
             const userTrackers = await trackers.getTrackers()
-            cli.action.stop('Done.')
             for (const tracker of userTrackers) {
                 console.log(trackersTable.render(tracker, now).toString())
             }
