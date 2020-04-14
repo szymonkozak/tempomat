@@ -1,5 +1,5 @@
 import aliases from '../config/aliases'
-import trackerStore, { Tracker, TrackerState } from '../config/trackerStore'
+import trackerStore, { Tracker } from '../config/trackerStore'
 
 export type StartTrackerInput = {
     issueKeyOrAlias: string,
@@ -45,14 +45,14 @@ export default {
             return undefined
         }
         let activeTimestamp = tracker.activeTimestamp
-        if (tracker.state === TrackerState.Paused || tracker.state === TrackerState.Stopped) {
+        if (!tracker.isActive) {
             activeTimestamp = input.now.getTime()
         }
         const updatedTracker = {
             issueKey: issueKey,
             description: tracker.description,
             activeTimestamp: activeTimestamp,
-            state: TrackerState.Resumed,
+            isActive: true,
             intervals: tracker.intervals
         }
         return trackerStore.putTracker(updatedTracker)
@@ -65,7 +65,7 @@ export default {
             return undefined
         }
         let newIntervals = tracker.intervals
-        if (tracker.state === TrackerState.Started || tracker.state === TrackerState.Resumed) {
+        if (tracker.isActive) {
             const duration = input.now.getTime() - tracker.activeTimestamp
             if (duration >= ONE_MINUTE_IN_MS) {
                 newIntervals = newIntervals.concat({
@@ -78,7 +78,7 @@ export default {
             issueKey: issueKey,
             description: tracker.description,
             activeTimestamp: tracker.activeTimestamp,
-            state: TrackerState.Paused,
+            isActive: false,
             intervals: newIntervals
         }
         return trackerStore.putTracker(updatedTracker)
@@ -94,7 +94,7 @@ export default {
                 issueKey: tracker.issueKey,
                 description: input?.description ?? tracker.description,
                 activeTimestamp: tracker.activeTimestamp,
-                state: TrackerState.Stopped,
+                isActive: false,
                 intervals: tracker.intervals
             })
         }
@@ -112,7 +112,7 @@ export default {
             issueKey: tracker.issueKey,
             description: tracker.description,
             activeTimestamp: tracker.activeTimestamp,
-            state: tracker.state,
+            isActive: tracker.isActive,
             intervals: newIntervals
         })
     },

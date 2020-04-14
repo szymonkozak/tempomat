@@ -4,15 +4,8 @@ export type Tracker = {
     issueKey: string
     description?: string
     activeTimestamp: number
-    state: TrackerState
+    isActive: boolean
     intervals: Interval[]
-}
-
-export enum TrackerState {
-    Started,
-    Resumed,
-    Paused,
-    Stopped
 }
 
 export type NewTracker = {
@@ -35,7 +28,7 @@ export default {
             issueKey: newTracker.issueKey,
             description: newTracker.description,
             activeTimestamp: newTracker.startTime,
-            state: TrackerState.Started,
+            isActive: true,
             intervals: []
         }
         config.trackers.set(newTracker.issueKey, tracker)

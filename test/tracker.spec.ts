@@ -3,7 +3,7 @@ import authenticator from '../src/config/authenticator'
 import aliases from '../src/config/aliases'
 import tempo from '../src/tempo'
 import configStore from '../src/config/configStore'
-import { Tracker, TrackerState } from '../src/config/trackerStore'
+import { Tracker } from '../src/config/trackerStore'
 import { add } from 'date-fns'
 
 jest.mock('../src/config/configStore', () => jest.requireActual('./mocks/configStore'))
@@ -55,7 +55,7 @@ describe('tracker', () => {
             issueKey: 'ABC-123',
             description: undefined,
             activeTimestamp: baseDate.getTime(),
-            state: TrackerState.Started,
+            isActive: true,
             intervals: []
         })
     })
@@ -73,7 +73,7 @@ describe('tracker', () => {
             issueKey: 'ABC-123',
             description: 'description',
             activeTimestamp: baseDate.getTime(),
-            state: TrackerState.Started,
+            isActive: true,
             intervals: []
         })
     })
@@ -95,7 +95,7 @@ describe('tracker', () => {
             issueKey: 'ABC-123',
             description: undefined,
             activeTimestamp: baseDate.getTime(),
-            state: TrackerState.Started,
+            isActive: true,
             intervals: []
         })
     })
@@ -113,7 +113,7 @@ describe('tracker', () => {
             issueKey: 'ABC-123',
             description: undefined,
             activeTimestamp: baseDate.getTime(),
-            state: TrackerState.Started,
+            isActive: true,
             intervals: []
         })
     })
@@ -165,7 +165,7 @@ describe('tracker', () => {
             issueKey: 'ABC-123',
             description: 'second start',
             activeTimestamp: baseDate.getTime() + 60 * 60 * 1_000,
-            state: TrackerState.Started,
+            isActive: true,
             intervals: []
         })
     })
@@ -417,7 +417,7 @@ describe('tracker', () => {
             issueKey: 'ABC-123',
             description: undefined,
             activeTimestamp: baseDate.getTime(),
-            state: TrackerState.Stopped,
+            isActive: false,
             intervals: [{
                 start: baseDate.getTime(),
                 end: add(baseDate, { minutes: 10 }).getTime()
@@ -499,7 +499,7 @@ describe('tracker', () => {
             issueKey: 'ABC-123',
             description: undefined,
             activeTimestamp: add(baseDate, { minutes: 30 }).getTime(),
-            state: TrackerState.Stopped,
+            isActive: false,
             intervals: [
                 {
                     start: add(baseDate, { minutes: 10 }).getTime(),

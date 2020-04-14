@@ -1,7 +1,7 @@
 import Table, { HorizontalTable, Cell } from 'cli-table3'
 import { lightFormat as fnsLightFormat, differenceInMinutes } from 'date-fns'
 import chalk from 'chalk'
-import { Tracker, TrackerState } from '../config/trackerStore'
+import { Tracker } from '../config/trackerStore'
 
 export function render(tracker: Tracker, now: Date): HorizontalTable {
     const table = new Table() as HorizontalTable
@@ -19,7 +19,7 @@ export function render(tracker: Tracker, now: Date): HorizontalTable {
 }
 
 function generateInfoHeaders(tracker: Tracker) {
-    const trackerIdContent = `Tracker for ${tracker.issueKey}, ${toString(tracker.state)}`
+    const trackerIdContent = `Tracker for ${tracker.issueKey}, ${toString(tracker.isActive)}`
     const trackerIdRow = [{ colSpan: 3, content: chalk.bold(trackerIdContent), hAlign: 'center' }]
     const descriptionRow = tracker.description ? [{ colSpan: 3, content: chalk.bold(`${tracker.description}`), hAlign: 'center' }] : []
     const trackerResumedAtContent = `Last resume time: ${fnsLightFormat(tracker.activeTimestamp, 'yyyy-MM-dd HH:mm')}`
@@ -31,17 +31,8 @@ function generateInfoHeaders(tracker: Tracker) {
     ].filter(row => row.length !== 0).map(row => row as Cell[])
 }
 
-function toString(trackerState: TrackerState) {
-    switch (trackerState) {
-    case TrackerState.Started:
-    case TrackerState.Resumed:
-        return 'ACTIVE'
-    case TrackerState.Paused:
-    case TrackerState.Stopped:
-        return 'INACTIVE'
-    default:
-        return 'UNKNOWN'
-    }
+function toString(isActive: boolean) {
+    return isActive ? 'Active' : 'INACTIVE'
 }
 
 function generateIntervalHeaders() {
@@ -78,7 +69,7 @@ function generateSummaryFooter(tracker: Tracker, now: Date) {
         .map(interval => differenceInMinutes(interval.end, interval.start))
         .reduce((previous, current) => previous + current, 0)
     let activeDuration = 0
-    if (tracker.state === TrackerState.Resumed || tracker.state === TrackerState.Started) {
+    if (tracker.isActive) {
         activeDuration = differenceInMinutes(now.getTime(), tracker.activeTimestamp)
     }
     const totalDuration = intervalsDuration + activeDuration
