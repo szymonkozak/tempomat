@@ -52,6 +52,12 @@ Succesfully deleted worklog 123458. Deleted worklog details: ABC-4321, 14:00-14:
 * [`tempo alias:set ALIAS_NAME ISSUE_KEY`](#tempo-aliasset-alias_name-issue_key)
 * [`tempo alias:delete ALIAS_NAME`](#tempo-aliasdelete-alias_name)
 * [`tempo alias:list`](#tempo-aliaslist)
+* [`tempo tracker:start ISSUE_KEY_OR_ALIAS`](#tempo-trackerstart-issue_key_or_alias)
+* [`tempo tracker:stop ISSUE_KEY_OR_ALIAS`](#tempo-trackerstop-issue_key_or_alias)
+* [`tempo tracker:pause ISSUE_KEY_OR_ALIAS`](#tempo-trackerpause-issue_key_or_alias)
+* [`tempo tracker:resume ISSUE_KEY_OR_ALIAS`](#tempo-trackerresume-issue_key_or_alias)
+* [`tempo tracker:delete ISSUE_KEY_OR_ALIAS`](#tempo-trackerdelete-issue_key_or_alias)
+* [`tempo tracker:list`](#tempo-trackerlist)
 
 ### `tempo help [COMMAND]`
 
@@ -248,6 +254,133 @@ OPTIONS
 
 EXAMPLE
   tempo alias:list
+```
+
+### `tempo tracker:start ISSUE_KEY_OR_ALIAS`
+
+[or start], start a new tracker
+
+```
+USAGE
+  $ tempo tracker:start ISSUE_KEY_OR_ALIAS
+
+ARGUMENTS
+  ISSUE_KEY_OR_ALIAS  issue key, like abc-123 or alias
+
+OPTIONS
+  -d, --description=description  description for worklng once tracker is stopped
+  -h, --help                     show CLI help
+  --debug
+
+ALIASES
+  $ tempo start
+
+EXAMPLES
+  tempo tracker:start abc-123
+  tempo start abc-123
+  tempo tracker:start abc-123 -d "worklog description"
+```
+
+### `tempo tracker:stop ISSUE_KEY_OR_ALIAS`
+
+[or stop], stop a tracker and log it
+
+```
+USAGE
+  $ tempo tracker:stop ISSUE_KEY_OR_ALIAS
+
+ARGUMENTS
+  ISSUE_KEY_OR_ALIAS  issue key, like abc-123 or alias
+
+OPTIONS
+  -d, --description=description  description for worklog
+  -h, --help                     show CLI help
+  --debug
+
+ALIASES
+  $ tempo stop
+
+EXAMPLES
+  tempo tracker:stop abc-123
+  tempo stop abc-123
+  tempo tracker:stop abc-123 -d "worklog description"
+```
+
+### `tempo tracker:resume ISSUE_KEY_OR_ALIAS`
+
+[or resume], resume a tracker that is currently paused
+
+```
+USAGE
+  $ tempo tracker:resume ISSUE_KEY_OR_ALIAS
+
+ARGUMENTS
+  ISSUE_KEY_OR_ALIAS  issue key, like abc-123 or alias
+
+OPTIONS
+  -h, --help  show CLI help
+  --debug
+
+ALIASES
+  $ tempo resume
+
+EXAMPLES
+  tempo tracker:resume abc-123
+  tempo resume abc-123
+```
+
+### `tempo tracker:pause ISSUE_KEY_OR_ALIAS`
+
+[or pause], pause a tracker that is currently running
+
+```
+USAGE
+  $ tempo tracker:pause ISSUE_KEY_OR_ALIAS
+
+ARGUMENTS
+  ISSUE_KEY_OR_ALIAS  issue key, like abc-123 or alias
+
+OPTIONS
+  -h, --help  show CLI help
+  --debug
+
+ALIASES
+  $ tempo pause
+
+EXAMPLES
+  tempo tracker:pause abc-123
+  tempo pause abc-123
+```
+
+### `tempo tracker:delete ISSUE_KEY_OR_ALIAS`
+
+delete a tracker
+
+```
+USAGE
+  $ tempo tracker:delete ISSUE_KEY_OR_ALIAS
+
+ARGUMENTS
+  ISSUE_KEY_OR_ALIAS  issue key, like abc-123 or alias
+
+OPTIONS
+  -h, --help  show CLI help
+  --debug
+
+EXAMPLE
+  tempo tracker:delete abc-123
+```
+
+### `tempo tracker:list`
+
+list all trackers
+
+```
+USAGE
+  $ tempo tracker:list
+
+EXAMPLE
+  tempo tracker:list
 ```
 
 ## License

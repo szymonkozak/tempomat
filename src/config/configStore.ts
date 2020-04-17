@@ -2,14 +2,16 @@ import fs from 'fs'
 import os from 'os'
 import { promisify } from 'util'
 import path from 'path'
+import { Tracker } from './trackerStore'
 
 const readFileAsync = promisify(fs.readFile)
 const writeFileAsync = promisify(fs.writeFile)
 
 export type Config = {
-    tempoToken?: string;
-    accountId?: string;
+    tempoToken?: string
+    accountId?: string
     aliases?: Map<string, string>
+    trackers?: Map<string, Tracker>
 }
 
 export function configFilePath(): string {
@@ -33,7 +35,8 @@ export default {
             return {
                 tempoToken: undefined,
                 accountId: undefined,
-                aliases: undefined
+                aliases: undefined,
+                trackers: undefined
             }
         }
     }

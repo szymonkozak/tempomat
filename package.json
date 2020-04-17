@@ -33,6 +33,9 @@
     "topics": {
       "alias": {
         "description": "manage issue key aliases"
+      },
+      "tracker": {
+        "description": "manage issue time trackers"
       }
     },
     "commands": "./dist/commands",

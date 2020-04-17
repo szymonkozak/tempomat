@@ -3,7 +3,8 @@ import { Config } from '../../src/config/configStore'
 let savedConfig: Config = {
     tempoToken: undefined,
     accountId: undefined,
-    aliases: undefined
+    aliases: undefined,
+    trackers: undefined
 }
 
 export default {
