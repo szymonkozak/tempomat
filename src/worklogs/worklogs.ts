@@ -94,9 +94,9 @@ export default {
 }
 
 async function generateWorklogs(worklogsResponse: GetWorklogsResponse, formattedDate: string): Promise<Worklog[]> {
-    const credentails = await authenticator.getCredentials()
+    const credentials = await authenticator.getCredentials()
     return worklogsResponse.results
-        .filter((e: WorklogEntity) => e.author.accountId === credentails.accountId && e.startDate === formattedDate)
+        .filter((e: WorklogEntity) => e.author.accountId === credentials.accountId && e.startDate === formattedDate)
         .map((e: WorklogEntity) => toWorklog(e))
 }
 
