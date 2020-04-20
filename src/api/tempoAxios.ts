@@ -7,8 +7,8 @@ const tempoAxios = axios.create({
 
 tempoAxios.interceptors.request.use(async function (axiosConfig) {
     if (await authenticator.hasTempoToken()) {
-        const credentails = await authenticator.getCredentials()
-        axiosConfig.headers.Authorization = `Bearer ${credentails.tempoToken}`
+        const credentials = await authenticator.getCredentials()
+        axiosConfig.headers.Authorization = `Bearer ${credentials.tempoToken}`
     }
     return axiosConfig
 })
