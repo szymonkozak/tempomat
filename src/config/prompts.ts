@@ -26,7 +26,7 @@ async function promptProfileInfo(): Promise<ProfileInfo> {
     const input = await cli.prompt(trimIndent(`
     Step 1/2:
     Enter URL to your Jira profile. (Needed to get your account id and domain name) 
-    1. Click on your avatar on the Jira sidebar
+    1. Click on your avatar on the Jira navigation header
     2. Click on the "profile" option
     3. Copy an URL and paste here:
     `))
@@ -40,11 +40,12 @@ async function promptProfileInfo(): Promise<ProfileInfo> {
 }
 
 async function promptTempoToken(hostname: string): Promise<string> {
-    cli.open(`https://${hostname}/plugins/servlet/ac/io.tempo.jira/tempo-configuration`)
+    const tempoConfigurationUrl = `https://${hostname}/plugins/servlet/ac/io.tempo.jira/tempo-app#!/configuration/api-integration`
+    cli.open(tempoConfigurationUrl)
     const input = await cli.prompt(trimIndent(`
     Step 2/2:
     That's almost everything! Enter your tempo token. You can generate it here: 
-    https://${hostname}/plugins/servlet/ac/io.tempo.jira/tempo-configuration 
+    ${tempoConfigurationUrl} 
     (this page should open automatically in your browser)
     `), { type: 'hide' })
     return input
