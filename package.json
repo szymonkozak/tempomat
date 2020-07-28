@@ -35,7 +35,7 @@
         "description": "manage issue key aliases"
       },
       "tracker": {
-        "description": "manage issue time trackers"
+        "description": "manage issue time trackers (beta)"
       }
     },
     "commands": "./dist/commands",
