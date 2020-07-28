@@ -52,6 +52,9 @@ Succesfully deleted worklog 123458. Deleted worklog details: ABC-4321, 14:00-14:
 * [`tempo alias:set ALIAS_NAME ISSUE_KEY`](#tempo-aliasset-alias_name-issue_key)
 * [`tempo alias:delete ALIAS_NAME`](#tempo-aliasdelete-alias_name)
 * [`tempo alias:list`](#tempo-aliaslist)
+
+Tracker commands are still in beta:
+
 * [`tempo tracker:start ISSUE_KEY_OR_ALIAS`](#tempo-trackerstart-issue_key_or_alias)
 * [`tempo tracker:stop ISSUE_KEY_OR_ALIAS`](#tempo-trackerstop-issue_key_or_alias)
 * [`tempo tracker:pause ISSUE_KEY_OR_ALIAS`](#tempo-trackerpause-issue_key_or_alias)
