@@ -1,0 +1,37 @@
+name: Pull Request
+on: 
+  pull_request:
+    paths-ignore:
+      - '.gitignore'
+      - '*.md'
+
+jobs:
+  test:
+    runs-on: [ubuntu-latest]
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [10.x, 12.x]
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Install npm
+      run: npm install
+    - name: Run build
+      run: npm run build --if-present
+    - name: Run tests
+      run: npm test
+
+  lint:
+    runs-on: [ubuntu-latest]
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+    - name: Run ESLint
+      uses: hallee/eslint-action@1.0.3
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
