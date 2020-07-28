@@ -30,7 +30,7 @@ export function toInterval(seconds: number, startTime: string): Interval | null 
     }
 }
 
-export function toDuration(seconds: number, plusPrefix: boolean = false): string | null {
+export function toDuration(seconds: number, plusPrefix: boolean = false): string {
     const hours = Math.floor(Math.abs(seconds) / 3600)
     const minutes = Math.floor((Math.abs(seconds) % 3600) / 60)
 
