@@ -131,7 +131,8 @@ async function execute<T>(action: () => Promise<T>): Promise<T> {
 
 function handleError(e: AxiosError): never {
     if (flags.debug) console.log(`Response: ${JSON.stringify(e.response?.data)}`)
-    if (e.response?.status === 401) {
+    const responseStatus = e.response?.status 
+    if (responseStatus === 401) {
         throw Error(`Unauthorized access. Token is invalid or has expired. Run ${appName} setup to configure access.`)
     }
     const errorMessages = e.response?.data?.errors?.map((err: { message?: string }) => err.message)
@@ -139,9 +140,8 @@ function handleError(e: AxiosError): never {
         throw Error(`Failure. Reason: ${e.message}. Errors: ${errorMessages.join(', ')}`)
     } else {
         if (flags.debug) console.log(e.toJSON())
-        const serverStatusCode = e.response?.status
-        let errorMessage = 'Error when connecting to server.'
-        if (serverStatusCode) errorMessage += ` Server status code: ${serverStatusCode}.`
+        let errorMessage = 'Error connecting to server.'
+        if (responseStatus) errorMessage += ` Server status code: ${responseStatus}.`
         throw Error(errorMessage)
     }
 }
