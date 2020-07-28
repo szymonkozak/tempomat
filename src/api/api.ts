@@ -120,7 +120,9 @@ async function fetchPaginatedResults<T>(acc: T[], response: AxiosResponse): Prom
 }
 
 function debugLog(response: AxiosResponse) {
-    if (flags.debug) console.log(`Request: ${JSON.stringify(response.config)}, Response: ${JSON.stringify(response.data)}`)
+    if (flags.debug) {
+        console.log(`Request: ${JSON.stringify(response.config)}, Response: ${JSON.stringify(response.data)}`)
+    }
 }
 
 async function execute<T>(action: () => Promise<T>): Promise<T> {
@@ -132,11 +134,14 @@ function handleError(e: AxiosError): never {
     if (e.response?.status === 401) {
         throw Error(`Unauthorized access. Token is invalid or has expired. Run ${appName} setup to configure access.`)
     }
-    const errorMessages = e.response?.data.errors.map((err: { message: string }) => err.message)
+    const errorMessages = e.response?.data?.errors?.map((err: { message?: string }) => err.message)
     if (errorMessages) {
         throw Error(`Failure. Reason: ${e.message}. Errors: ${errorMessages.join(', ')}`)
     } else {
         if (flags.debug) console.log(e.toJSON())
-        throw Error('Error when connecting to server.')
+        const serverStatusCode = e.response?.status
+        let errorMessage = 'Error when connecting to server.'
+        if (serverStatusCode) errorMessage += ` Server status code: ${serverStatusCode}.`
+        throw Error(errorMessage)
     }
 }
