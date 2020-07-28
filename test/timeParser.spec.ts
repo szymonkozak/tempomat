@@ -141,25 +141,25 @@ describe('time parser parses', () => {
 
 describe('time parser changes', () => {
     it.each`
-    input         | expected     | plusPrefix
-    ${3600}       | ${'1h'}      | ${false}
-    ${4500}       | ${'1h15m'}   | ${false}
-    ${7199}       | ${'1h59m'}   | ${false}
-    ${7200}       | ${'2h'}      | ${false}
-    ${1200}       | ${'20m'}     | ${false}
-    ${0}          | ${'0h'}      | ${false}
-    ${1}          | ${'0h'}      | ${false}
-    ${59}         | ${'0h'}      | ${false}
-    ${60}         | ${'1m'}      | ${false}
-    ${120}        | ${'2m'}      | ${false}
-    ${239}        | ${'3m'}      | ${false}
-    ${240}        | ${'4m'}      | ${false}
-    ${-4500}      | ${'-1h15m'}  | ${false}
-    ${-60}        | ${'-1m'}     | ${false}
-    ${60}         | ${'+1m'}     | ${true}
-    ${3600}       | ${'+1h'}     | ${true}
-    ${4500}       | ${'+1h15m'}  | ${true}
-    ${0}          | ${'0h'}      | ${true}
+    input       | plusPrefix     | expected  
+    ${3600}     | ${false}       | ${'1h'}      
+    ${4500}     | ${false}       | ${'1h15m'}   
+    ${7199}     | ${false}       | ${'1h59m'}   
+    ${7200}     | ${false}       | ${'2h'}      
+    ${1200}     | ${false}       | ${'20m'}     
+    ${0}        | ${false}       | ${'0h'}      
+    ${1}        | ${false}       | ${'0h'}      
+    ${59}       | ${false}       | ${'0h'}      
+    ${60}       | ${false}       | ${'1m'}      
+    ${120}      | ${false}       | ${'2m'}      
+    ${239}      | ${false}       | ${'3m'}      
+    ${240}      | ${false}       | ${'4m'}      
+    ${-4500}    | ${false}       | ${'-1h15m'}  
+    ${-60}      | ${false}       | ${'-1m'}     
+    ${60}       | ${true}        | ${'+1m'}     
+    ${3600}     | ${true}        | ${'+1h'}     
+    ${4500}     | ${true}        | ${'+1h15m'}  
+    ${0}        | ${true}        | ${'0h'}      
 `('$input seconds to $expected', ({ input, expected, plusPrefix }) => {
     mockCurrentDate(new Date('2020-01-01T12:00:00.000+01:00'))
     const duration = timeParser.toDuration(input, plusPrefix)

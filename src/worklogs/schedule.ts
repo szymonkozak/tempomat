@@ -7,11 +7,11 @@ import { format, isBefore, parse as fnsParse } from 'date-fns'
 const DATE_FORMAT = 'yyyy-MM-dd'
 
 export type ScheduleDetails = {
-    monthRequiredDuration: string | null,
-    monthLoggedDuration: string | null,
-    monthCurrentPeriodDuration: string | null,
-    dayRequiredDuration: string | null,
-    dayLoggedDuration: string | null,
+    monthRequiredDuration: string,
+    monthLoggedDuration: string,
+    monthCurrentPeriodDuration: string,
+    dayRequiredDuration: string,
+    dayLoggedDuration: string,
 }
 
 export function createScheduleDetails(
