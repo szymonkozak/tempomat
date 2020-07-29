@@ -3,14 +3,15 @@ import Table, { HorizontalTable, Cell } from 'cli-table3'
 import { format } from 'date-fns'
 import chalk from 'chalk'
 import { UserWorklogs, Worklog } from './worklogs'
+import issueKeyExtended, { AliasesPosition } from '../issueKeyExtended'
 
 // How many columns should be removed, when verbose mode is off
 const COLUMNS_TO_REMOVE = 2
 
-export function render(userWorklogs: UserWorklogs, verbose: boolean = false) {
+export async function render(userWorklogs: UserWorklogs, verbose: boolean = false) {
     const { worklogHeaders, columnsNumber } = generateWorklogHeaders(verbose)
     const infoHeaders = generateInfoHeaders(userWorklogs, verbose, columnsNumber)
-    const content = generateContent(userWorklogs.worklogs, verbose, columnsNumber)
+    const content = await generateContent(userWorklogs.worklogs, verbose, columnsNumber)
     const summaryFooter = generateDurationSummaryFooter(userWorklogs)
     const table = new Table() as HorizontalTable
     table.push(
@@ -46,35 +47,40 @@ function generateInfoHeaders(userWorklogs: UserWorklogs, verbose: boolean, colSp
     const monthInfo = `${format(userWorklogs.date, 'MMMM')}: ${monthProgress} (${details.monthCurrentPeriodDuration})`
     const dateInfo = format(userWorklogs.date, 'eeee, yyyy-MM-dd')
     return [
-        [{ colSpan, hAlign: 'center', content: chalk.bold(monthInfo) }],
-        [{ colSpan, hAlign: 'center', content: chalk.bold(dateInfo) }]
+        [{ colSpan: colSpan, hAlign: 'center', content: chalk.bold(monthInfo) }],
+        [{ colSpan: colSpan, hAlign: 'center', content: chalk.bold(dateInfo) }]
     ].map((r) => r as Cell[])
 }
 
-function generateContent(worklogs: Worklog[], verbose: boolean, colSpan: number) {
-    let content = generateWorklogsContent(worklogs) as Cell[][]
+async function generateContent(worklogs: Worklog[], verbose: boolean, colSpan: number) {
+    let content = await generateWorklogsContent(worklogs)
     if (!verbose) {
         content.map(r => r.splice(r.length - COLUMNS_TO_REMOVE, COLUMNS_TO_REMOVE))
     }
     if (content.length === 0) {
-        content = [[{ colSpan, content: chalk.redBright('No worklogs'), hAlign: 'center' }]]
+        content = [
+            [{ colSpan: colSpan, content: chalk.redBright('No worklogs'), hAlign: 'center' }]
+        ]
     }
     return content.map((r) => r as Cell[])
 }
 
-function generateWorklogsContent(worklogs: Worklog[]) {
+async function generateWorklogsContent(worklogs: Worklog[]) {
     const intervalRows = markBreaksBetweenIntervals(worklogs)
-    return worklogs.map((w, index) => {
-        const tableContent = {
-            id: { colSpan: 1, content: chalk.yellow(w.id), hAlign: 'right' },
-            interval: { content: intervalRows[index], hAlign: 'right' },
-            issueKey: { content: chalk.bold(w.issueKey), hAlign: 'right' },
-            duration: { content: w.duration, hAlign: 'right' },
-            description: cliTruncate(w.description, 30),
-            taskUrl: w.link
-        }
-        return Object.values(tableContent)
-    })
+    return Promise.all(
+        worklogs.map(async (worklog, index) => {
+            const issueKey = await issueKeyExtended(worklog.issueKey, AliasesPosition.Left)
+            const tableContent = {
+                id: { colSpan: 1, content: chalk.yellow(worklog.id), hAlign: 'right' },
+                interval: { colSpan: 1, content: intervalRows[index], hAlign: 'right' },
+                issueKey: { colSpan: 1, content: issueKey, hAlign: 'right' },
+                duration: { colSpan: 1, content: worklog.duration, hAlign: 'right' },
+                description: cliTruncate(worklog.description, 30),
+                taskUrl: worklog.link
+            }
+            return Object.values(tableContent)
+        })
+    )
 }
 
 function markBreaksBetweenIntervals(worklogs: Worklog[]): string[] {

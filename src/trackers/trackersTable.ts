@@ -2,10 +2,11 @@ import Table, { HorizontalTable, Cell } from 'cli-table3'
 import { lightFormat as fnsLightFormat, differenceInMinutes } from 'date-fns'
 import chalk from 'chalk'
 import { Tracker } from '../config/trackerStore'
+import issueKeyExtended, { AliasesPosition } from '../issueKeyExtended'
 
-export function render(tracker: Tracker, now: Date): HorizontalTable {
+export async function render(tracker: Tracker, now: Date): Promise<HorizontalTable> {
     const table = new Table() as HorizontalTable
-    const infoHeaders = generateInfoHeaders(tracker)
+    const infoHeaders = await generateInfoHeaders(tracker)
     const intervalHeaders = generateIntervalHeaders()
     const intervalsContent = generateIntervalsContent(tracker.intervals)
     const summaryFooter = generateSummaryFooter(tracker, now)
@@ -18,8 +19,9 @@ export function render(tracker: Tracker, now: Date): HorizontalTable {
     return table
 }
 
-function generateInfoHeaders(tracker: Tracker) {
-    const trackerIdContent = `Tracker for ${tracker.issueKey}, ${toString(tracker.isActive)}`
+async function generateInfoHeaders(tracker: Tracker) {
+    const issueKey = await issueKeyExtended(tracker.issueKey, AliasesPosition.Right)
+    const trackerIdContent = `Tracker for ${issueKey}, ${toString(tracker.isActive)}`
     const trackerIdRow = [{ colSpan: 3, content: chalk.bold(trackerIdContent), hAlign: 'center' }]
     const descriptionRow = tracker.description ? [{ colSpan: 3, content: chalk.bold(`${tracker.description}`), hAlign: 'center' }] : []
     const trackerResumedAtContent = `Last resume time: ${fnsLightFormat(tracker.activeTimestamp, 'yyyy-MM-dd HH:mm')}`
