@@ -39,8 +39,8 @@ export default {
 
     async addWorklog(input: AddWorklogInput): Promise<Worklog> {
         await checkToken()
-        const now = time.now()
-        const parseResult = timeParser.parse(input.durationOrInterval)
+        const referenceDate = parseWhenArg(time.now(), input.when)
+        const parseResult = timeParser.parse(input.durationOrInterval, referenceDate)
         if (parseResult == null) {
             throw Error(`Error with parsing ${input.durationOrInterval}. Try something like 1h10m or 11-12:30. See ${appName} log --help for more examples.`)
         }
@@ -51,8 +51,8 @@ export default {
         const worklogEntity = await api.addWorklog({
             issueKey: issueKey,
             timeSpentSeconds: parseResult.seconds,
-            startDate: format(parseWhenArg(now, input.when), DATE_FORMAT),
-            startTime: startTime(parseResult, input.startTime, now),
+            startDate: format(referenceDate, DATE_FORMAT),
+            startTime: startTime(parseResult, input.startTime, referenceDate),
             description: input.description
         })
         return toWorklog(worklogEntity)
@@ -101,9 +101,10 @@ async function generateWorklogs(worklogsResponse: GetWorklogsResponse, formatted
 }
 
 function toWorklog(entity: WorklogEntity) {
+    const referenceDate = fnsParse(entity.startDate, DATE_FORMAT, time.now())
     return {
         id: entity.tempoWorklogId,
-        interval: timeParser.toInterval(entity.timeSpentSeconds, entity.startTime) ?? undefined,
+        interval: timeParser.toInterval(entity.timeSpentSeconds, entity.startTime, referenceDate) ?? undefined,
         issueKey: entity.issue.key,
         duration: timeParser.toDuration(entity.timeSpentSeconds) ?? 'unknown',
         description: entity.description,
@@ -129,17 +130,17 @@ function parseWhenArg(now: Date, when: string | undefined): Date {
     }
 }
 
-function startTime(parseResult: ParseResult, inputStartTime: string | undefined, now: Date) {
+function startTime(parseResult: ParseResult, inputStartTime: string | undefined, referenceDate: Date) {
     if (parseResult.startTime) {
         if (inputStartTime) console.log(`Start time param is ignored, ${parseResult.startTime} is used instead.`)
         return parseResult.startTime
     }
-    if (inputStartTime) return parseStartTime(inputStartTime)
-    return format(now, START_TIME_FORMAT)
+    if (inputStartTime) return parseStartTime(inputStartTime, referenceDate)
+    return format(referenceDate, START_TIME_FORMAT)
 }
 
-function parseStartTime(startTime: string): string {
-    const parsedTime = timeParser.parseTime(startTime)
+function parseStartTime(startTime: string, referenceDate: Date): string {
+    const parsedTime = timeParser.parseTime(startTime, referenceDate)
     if (parsedTime) {
         return format(parsedTime, START_TIME_FORMAT)
     } else {

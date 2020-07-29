@@ -1,5 +1,4 @@
 import { parse as fnsParse, format, isValid, differenceInSeconds, isAfter, addSeconds } from 'date-fns'
-import timeProvider from '../time'
 
 export type ParseResult = {
     seconds: number
@@ -11,13 +10,13 @@ export type Interval = {
     endTime: string
 }
 
-export function parse(durationOrInterval: string): ParseResult | null {
-    return parseDuration(durationOrInterval) ?? parseInterval(durationOrInterval)
+export function parse(durationOrInterval: string, referenceDate: Date): ParseResult | null {
+    return parseDuration(durationOrInterval) ?? parseInterval(durationOrInterval, referenceDate)
 }
 
-export function toInterval(seconds: number, startTime: string): Interval | null {
+export function toInterval(seconds: number, startTime: string, referenceDate: Date): Interval | null {
     if (seconds < 0) return null
-    const parsedStartTime = fnsParse(startTime, 'HH:mm:ss', timeProvider.now())
+    const parsedStartTime = fnsParse(startTime, 'HH:mm:ss', referenceDate)
     if (isValid(parsedStartTime)) {
         const startTime = format(parsedStartTime, 'HH:mm')
         const endTime = format(addSeconds(parsedStartTime, seconds), 'HH:mm')
@@ -61,13 +60,13 @@ function parseDuration(input: string): ParseResult | null {
     }
 }
 
-function parseInterval(input: string): ParseResult | null {
+function parseInterval(input: string, referenceDate: Date): ParseResult | null {
     const interval = input.split('-')
     if (interval.length !== 2) return null
     const from = interval[0]
     const to = interval[1]
-    const seconds = intervalToSeconds(from, to)
-    const start = parseTime(from)
+    const seconds = intervalToSeconds(from, to, referenceDate)
+    const start = parseTime(from, referenceDate)
     if (seconds == null || start == null) return null
     return {
         seconds: seconds,
@@ -75,9 +74,9 @@ function parseInterval(input: string): ParseResult | null {
     }
 }
 
-function intervalToSeconds(startTime: string, endTime: string): number | null {
-    var start = parseTime(startTime)
-    var end = parseTime(endTime)
+function intervalToSeconds(startTime: string, endTime: string, referenceDate: Date): number | null {
+    var start = parseTime(startTime, referenceDate)
+    var end = parseTime(endTime, referenceDate)
     if (!start || !end) return null
     const diff = differenceInSeconds(end, start)
 
@@ -89,14 +88,13 @@ function intervalToSeconds(startTime: string, endTime: string): number | null {
     }
 }
 
-export function parseTime(time: string) {
-    const now = timeProvider.now()
-    return validDateOrNull(fnsParse(time, 'HH', now)) ??
-        validDateOrNull(fnsParse(time, 'HH:mm', now)) ??
-        validDateOrNull(fnsParse(time, 'H:mm', now)) ??
-        validDateOrNull(fnsParse(time, 'HH.mm', now)) ??
-        validDateOrNull(fnsParse(time, 'H.mm', now)) ??
-        validDateOrNull(fnsParse(time, 'H', now))
+export function parseTime(time: string, referenceDate: Date) {
+    return validDateOrNull(fnsParse(time, 'HH', referenceDate)) ??
+        validDateOrNull(fnsParse(time, 'HH:mm', referenceDate)) ??
+        validDateOrNull(fnsParse(time, 'H:mm', referenceDate)) ??
+        validDateOrNull(fnsParse(time, 'HH.mm', referenceDate)) ??
+        validDateOrNull(fnsParse(time, 'H.mm', referenceDate)) ??
+        validDateOrNull(fnsParse(time, 'H', referenceDate))
 }
 
 function validDateOrNull(date: Date): Date | null {
