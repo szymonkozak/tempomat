@@ -1,5 +1,4 @@
 import * as timeParser from '../src/worklogs/timeParser'
-import { mockCurrentDate } from './mocks/currentDate'
 
 describe('time parser parses', () => {
     it.each`
@@ -68,8 +67,7 @@ describe('time parser parses', () => {
     ${' '}           | ${null}
     ${'foo'}         | ${null}
     `('$input to $expected seconds', ({ input, expected }) => {
-    mockCurrentDate(new Date('2020-01-01T12:00:00.000+01:00'))
-    const seconds = timeParser.parse(input)?.seconds ?? null
+    const seconds = timeParser.parse(input, new Date('2020-01-01T12:00:00.000+01:00'))?.seconds ?? null
     expect(seconds).toEqual(expected)
 })
 
@@ -91,8 +89,7 @@ describe('time parser parses', () => {
     ${'00.00-5'}     | ${'00:00:00'}
     ${'23:50-00:10'} | ${'23:50:00'}
 `('$input to $expected startTime', ({ input, expected }) => {
-    mockCurrentDate(new Date('2020-01-01T12:00:00.000+01:00'))
-    const startTime = timeParser.parse(input)?.startTime ?? null
+    const startTime = timeParser.parse(input, new Date('2020-01-01T12:00:00.000+01:00'))?.startTime ?? null
     expect(startTime).toEqual(expected)
 })
 
@@ -112,8 +109,7 @@ describe('time parser parses', () => {
     ${'3:00-4:00'}   | ${3600}
     ${'2:00-3:00'}   | ${86400}
 `('$input to $expected startTime during time change (forward)', ({ input, expected }) => {
-    mockCurrentDate(new Date('2020-03-29T12:00:00.000+01:00'))
-    const seconds = timeParser.parse(input)?.seconds ?? null
+    const seconds = timeParser.parse(input, new Date('2020-03-29T12:00:00.000+01:00'))?.seconds ?? null
     expect(seconds).toEqual(expected)
 })
 
@@ -133,8 +129,7 @@ describe('time parser parses', () => {
     ${'3:00-4:00'}   | ${3600}
     ${'2:00-3:00'}   | ${7200}
 `('$input to $expected startTime during time change (back)', ({ input, expected }) => {
-    mockCurrentDate(new Date('2020-10-25T12:00:00.000+01:00'))
-    const seconds = timeParser.parse(input)?.seconds ?? null
+    const seconds = timeParser.parse(input, new Date('2020-10-25T12:00:00.000+01:00'))?.seconds ?? null
     expect(seconds).toEqual(expected)
 })
 })
@@ -161,7 +156,6 @@ describe('time parser changes', () => {
     ${4500}     | ${true}        | ${'+1h15m'}  
     ${0}        | ${true}        | ${'0h'}      
 `('$input seconds to $expected', ({ input, expected, plusPrefix }) => {
-    mockCurrentDate(new Date('2020-01-01T12:00:00.000+01:00'))
     const duration = timeParser.toDuration(input, plusPrefix)
     expect(duration).toEqual(expected)
 })
@@ -183,8 +177,7 @@ describe('time parser changes', () => {
     ${-1}         | ${'00:00:00'}       | ${null}
     ${20}         | ${'foo'}            | ${null}
 `('$input seconds to $expected', ({ input, startTime, expected }) => {
-    mockCurrentDate(new Date('2020-01-01T12:00:00.000+01:00'))
-    const interval = timeParser.toInterval(input, startTime)
+    const interval = timeParser.toInterval(input, startTime, new Date('2020-01-01T12:00:00.000+01:00'))
     expect(interval).toEqual(expected)
 })
 })

@@ -94,7 +94,7 @@ describe('adds a worklog', () => {
                 issueKey: 'ABC-123',
                 timeSpentSeconds: 4200,
                 startDate: '2020-03-08',
-                startTime: '12:00:00'
+                startTime: '00:00:00'
             })
         })
     })
