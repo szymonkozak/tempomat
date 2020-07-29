@@ -131,7 +131,7 @@ async function execute<T>(action: () => Promise<T>): Promise<T> {
 
 function handleError(e: AxiosError): never {
     if (flags.debug) console.log(`Response: ${JSON.stringify(e.response?.data)}`)
-    const responseStatus = e.response?.status 
+    const responseStatus = e.response?.status
     if (responseStatus === 401) {
         throw Error(`Unauthorized access. Token is invalid or has expired. Run ${appName} setup to configure access.`)
     }
