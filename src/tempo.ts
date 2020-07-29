@@ -62,7 +62,7 @@ export default {
             cli.action.start('Loading worklogs')
             const userWorklogs = await worklogs.getUserWorklogs(when)
             cli.action.stop('Done.')
-            const table = worklogsTable.render(userWorklogs, verbose)
+            const table = await worklogsTable.render(userWorklogs, verbose)
             console.log(table.toString())
         })
     },
@@ -172,7 +172,8 @@ export default {
         execute(async () => {
             const userTrackers = await trackers.getTrackers()
             for (const tracker of userTrackers) {
-                console.log(trackersTable.render(tracker, now).toString())
+                const table = await trackersTable.render(tracker, now)
+                console.log(table.toString())
             }
         })
     }

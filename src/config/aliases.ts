@@ -7,6 +7,16 @@ export default {
         return config.aliases?.get(aliasName)
     },
 
+    async getAliasNames(issueKey: string): Promise<Array<string>> {
+        const config = await configStore.read()
+        if (!config.aliases) return []
+        const entries = Array.from(config.aliases.entries()).filter(entry => {
+            return entry[1].toUpperCase() === issueKey.toUpperCase()
+        })
+        const aliases = entries.map(value => value[0])
+        return aliases
+    },
+
     async set(aliasName: string, issueKey: string) {
         const config = await configStore.read()
         if (!config.aliases) {
