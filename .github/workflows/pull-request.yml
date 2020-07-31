@@ -1,10 +1,5 @@
 name: Pull Request
-on: 
-  pull_request:
-    paths-ignore:
-      - '.gitignore'
-      - '*.md'
-
+on: pull_request
 jobs:
   test:
     runs-on: [ubuntu-latest]
