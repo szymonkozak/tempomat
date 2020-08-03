@@ -11,6 +11,7 @@ import aliases from '../config/aliases'
 
 const DATE_FORMAT = 'yyyy-MM-dd'
 const START_TIME_FORMAT = 'HH:mm:ss'
+const YESTERDAY_LITERALS = ['y', 'yesterday']
 
 export type AddWorklogInput = {
     issueKeyOrAlias: string
@@ -121,7 +122,11 @@ async function checkToken() {
 
 function parseWhenArg(now: Date, when: string | undefined): Date {
     if (when === undefined) return now
-    if (when === 'y' || when === 'yesterday') return addDays(now, -1)
+    if (YESTERDAY_LITERALS.includes(when)) {
+        const nowAtMidnight = new Date(now)
+        nowAtMidnight.setHours(0, 0, 0, 0)
+        return addDays(nowAtMidnight, -1)
+    }
     const date = fnsParse(when, DATE_FORMAT, new Date())
     if (isValid(date)) {
         return date
