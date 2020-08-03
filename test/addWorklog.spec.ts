@@ -159,6 +159,36 @@ describe('adds a worklog', () => {
                 startTime: '11:00:00'
             })
         })
+
+        test('2h at yesterday with "y" alias', async () => {
+            await worklogs.addWorklog({
+                issueKeyOrAlias: 'ABC-123',
+                durationOrInterval: '2h',
+                when: 'y'
+            })
+
+            expect(addWorklogMock).toHaveBeenCalledWith({
+                issueKey: 'ABC-123',
+                timeSpentSeconds: 7200,
+                startDate: '2020-02-27',
+                startTime: '00:00:00'
+            })
+        })
+
+        test('2h at yesterday with "yesterday" alias', async () => {
+            await worklogs.addWorklog({
+                issueKeyOrAlias: 'ABC-123',
+                durationOrInterval: '2h',
+                when: 'yesterday'
+            })
+
+            expect(addWorklogMock).toHaveBeenCalledWith({
+                issueKey: 'ABC-123',
+                timeSpentSeconds: 7200,
+                startDate: '2020-02-27',
+                startTime: '00:00:00'
+            })
+        })
     })
 
     test('with description', async () => {
