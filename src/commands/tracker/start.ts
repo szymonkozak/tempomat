@@ -18,7 +18,8 @@ export default class Start extends Command {
     static flags = {
         help: flags.help({ char: 'h' }),
         debug: flags.boolean(),
-        description: flags.string({ char: 'd', description: 'description for worklng once tracker is stopped' })
+        description: flags.string({ char: 'd', description: 'description for worklng once tracker is stopped' }),
+        'stop-previous': flags.boolean({ description: 'stops and logs previous tracker with the same issue key if it exists' })
     }
 
     static args = [
@@ -35,7 +36,8 @@ export default class Start extends Command {
         tempo.startTracker({
             issueKeyOrAlias: args.issue_key_or_alias,
             description: flags.description,
-            now: time.now()
+            now: time.now(),
+            stopPreviousTracker: flags['stop-previous']
         })
     }
 }

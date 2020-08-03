@@ -4,7 +4,8 @@ import trackerStore, { Tracker } from '../config/trackerStore'
 export type StartTrackerInput = {
     issueKeyOrAlias: string,
     description?: string,
-    now: Date
+    now: Date,
+    stopPreviousTracker?: boolean
 }
 
 export type ResumeTrackerInput = {
@@ -28,6 +29,11 @@ export type DeleteTrackerInput = {
 }
 
 export default {
+
+    async findTracker(issueKeyOrAlias: string): Promise<Tracker | undefined> {
+        const issueKey = await aliases.getIssueKey(issueKeyOrAlias) ?? issueKeyOrAlias
+        return trackerStore.getTracker(issueKey)
+    },
 
     async startTracker(input: StartTrackerInput): Promise<Tracker | undefined> {
         const issueKey = await aliases.getIssueKey(input.issueKeyOrAlias) ?? input.issueKeyOrAlias
