@@ -89,7 +89,15 @@ export default {
 
     async startTracker(input: StartTrackerInput) {
         await execute(async () => {
-            const tracker = await trackers.startTracker(input)
+            let tracker = await trackers.findTracker(input.issueKeyOrAlias)
+            if (input.stopPreviousTracker && tracker) {
+                await this.stopTracker({
+                    issueKeyOrAlias: input.issueKeyOrAlias,
+                    now: input.now
+                })
+            }
+
+            tracker = await trackers.startTracker(input)
             if (!tracker) {
                 console.log(chalk.redBright(`Tracker for ${input.issueKeyOrAlias} already exists.`))
                 return
