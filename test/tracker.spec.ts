@@ -581,35 +581,6 @@ describe('tracker', () => {
         })
     })
 
-    test('stop previous flag can start a tracker for the same issue', async () => {
-        await clearStore()
-        authenticate()
-        const apiMock = mockWorklogResponse()
-
-        await tempo.startTracker({
-            issueKeyOrAlias: 'ABC-123',
-            now: baseDate
-        })
-        await tempo.startTracker({
-            issueKeyOrAlias: 'ABC-123',
-            now: add(baseDate, { minutes: 30 }),
-            stopPreviousTracker: true
-        })
-
-        expect(apiMock).toBeCalledWith({
-            issueKey: 'ABC-123',
-            timeSpentSeconds: 1800,
-            startDate: '2020-02-28',
-            startTime: '12:00:00'
-        })
-        expect(await getTracker('ABC-123')).toEqual({
-            issueKey: 'ABC-123',
-            activeTimestamp: add(baseDate, { minutes: 30 }).getTime(),
-            isActive: true,
-            intervals: []
-        })
-    })
-
     test('stop previous flag does not start a tracker for the same issue for log failures', async () => {
         await clearStore()
         authenticate()
