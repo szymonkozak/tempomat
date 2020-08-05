@@ -18,7 +18,7 @@ export default class Start extends Command {
     static flags = {
         help: flags.help({ char: 'h' }),
         debug: flags.boolean(),
-        description: flags.string({ char: 'd', description: 'description for worklng once tracker is stopped' }),
+        description: flags.string({ char: 'd', description: 'description for worklog once tracker is stopped' }),
         'stop-previous': flags.boolean({ description: 'stops and logs previous tracker with the same issue key if it exists' })
     }
 
