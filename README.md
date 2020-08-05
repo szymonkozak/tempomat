@@ -271,7 +271,7 @@ ARGUMENTS
   ISSUE_KEY_OR_ALIAS  issue key, like abc-123 or alias
 
 OPTIONS
-  -d, --description=description  description for worklng once tracker is stopped
+  -d, --description=description  description for worklog once tracker is stopped
   -h, --help                     show CLI help
   --debug
 
