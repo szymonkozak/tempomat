@@ -274,6 +274,7 @@ OPTIONS
   -d, --description=description  description for worklog once tracker is stopped
   -h, --help                     show CLI help
   --debug
+  --stop-previous                stops and logs previous tracker with the same issue key if it exists
 
 ALIASES
   $ tempo start
