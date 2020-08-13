@@ -7,6 +7,9 @@ tempomat
 [![Version](https://img.shields.io/npm/v/tempomat.svg)](https://npmjs.org/package/tempomat)
 [![License](https://img.shields.io/npm/l/tempomat.svg)](https://github.com/szymonkozak/tempomat/blob/master/LICENSE)
 
+If you don’t like using Jira/Tempo web UI for time logging and prefer a command line tools, tempomat is a simple CLI which allows you to manage your worklogs in Tempo Cloud service. It also includes time tracker feature.
+
+Save time, it’s much easier and faster to log time and browse worklogs using tempomat CLI.
 
 ## Usage
 ```
