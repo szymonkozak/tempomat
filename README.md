@@ -1,5 +1,4 @@
-tempomat
-========
+<img src="logo.png" width="280" alt="tempomat">
 
 [Tempo.io](https://tempo.io) cloud CLI
 
