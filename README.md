@@ -1,4 +1,4 @@
-<img src="logo.png" width="280" alt="tempomat">
+<img src="logo.svg" width="280" alt="tempomat">
 
 [Tempo.io](https://tempo.io) cloud CLI
 
