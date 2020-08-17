@@ -9,7 +9,8 @@ export type AddWorklogRequest = {
     timeSpentSeconds: number;
     startDate: string;
     startTime: string;
-    description: string | undefined;
+    description?: string;
+    remainingEstimateSeconds?: number
 }
 
 export type GetWorklogsRequest = {
