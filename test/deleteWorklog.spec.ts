@@ -4,6 +4,8 @@ import authenticator from '../src/config/authenticator'
 
 jest.mock('../src/config/configStore', () => jest.requireActual('./mocks/configStore'))
 
+afterEach(() => { jest.clearAllMocks() })
+
 authenticator.saveCredentials({
     accountId: 'fakeAccountId',
     tempoToken: 'fakeToken'
@@ -45,4 +47,10 @@ test('deletes a worklog', async () => {
         issueKey: 'ABC-123',
         link: 'https://example.atlassian.net/browse/ABC-123'
     })
+})
+
+test('fails when worklog id is not an integer', async () => {
+    await expect(worklogs.deleteWorklog('something')).rejects.toEqual(
+        new Error('Error. Worklog id should be an integer number.')
+    )
 })

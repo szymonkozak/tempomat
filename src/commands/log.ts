@@ -30,7 +30,8 @@ export default class Log extends Command {
       help: flags.help({ char: 'h' }),
       debug: flags.boolean(),
       description: flags.string({ char: 'd', description: 'worklog description' }),
-      start: flags.string({ char: 's', description: 'start time (HH:mm format), used when the input is a duration' })
+      start: flags.string({ char: 's', description: 'start time (HH:mm format), used when the input is a duration' }),
+      'remaining-estimate': flags.string({ char: 'r', description: 'remaining estimate' })
   }
 
   static args = [
@@ -61,7 +62,8 @@ export default class Log extends Command {
           durationOrInterval: args.duration_or_interval,
           when: args.when,
           description: flags.description,
-          startTime: flags.start
+          startTime: flags.start,
+          remainingEstimate: flags['remaining-estimate']
       })
   }
 }

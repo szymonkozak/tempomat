@@ -18,7 +18,8 @@ export type AddWorklogInput = {
     durationOrInterval: string
     when?: string
     description?: string
-    startTime?: string
+    startTime?: string,
+    remainingEstimate?: string
 }
 
 export type Worklog = {
@@ -43,7 +44,7 @@ export default {
         const referenceDate = parseWhenArg(time.now(), input.when)
         const parseResult = timeParser.parse(input.durationOrInterval, referenceDate)
         if (parseResult == null) {
-            throw Error(`Error with parsing ${input.durationOrInterval}. Try something like 1h10m or 11-12:30. See ${appName} log --help for more examples.`)
+            throw Error(`Error parsing "${input.durationOrInterval}". Try something like 1h10m or 11-12:30. See ${appName} log --help for more examples.`)
         }
         if (parseResult.seconds <= 0) {
             throw Error('Error. Minutes worked must be larger than 0.')
@@ -54,7 +55,8 @@ export default {
             timeSpentSeconds: parseResult.seconds,
             startDate: format(referenceDate, DATE_FORMAT),
             startTime: startTime(parseResult, input.startTime, referenceDate),
-            description: input.description
+            description: input.description,
+            remainingEstimateSeconds: remainingEstimateSeconds(referenceDate, input.remainingEstimate)
         })
         return toWorklog(worklogEntity)
     },
@@ -92,6 +94,17 @@ export default {
         )
         return { worklogs, date, scheduleDetails }
     }
+}
+
+function remainingEstimateSeconds(referenceDate: Date, remainingEstimate?: string): number | undefined {
+    if (remainingEstimate) {
+        const result = timeParser.parse(remainingEstimate, referenceDate)
+        if (result == null) {
+            throw Error(`Error parsing "${remainingEstimate}". Try something like 1h. See ${appName} log --help for more examples.`)
+        }
+        return result.seconds
+    }
+    return undefined
 }
 
 async function generateWorklogs(worklogsResponse: GetWorklogsResponse, formattedDate: string): Promise<Worklog[]> {

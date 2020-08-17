@@ -8,6 +8,8 @@ import authenticator from '../src/config/authenticator'
 
 jest.mock('../src/config/configStore', () => jest.requireActual('./mocks/configStore'))
 
+afterEach(() => { jest.clearAllMocks() })
+
 authenticator.saveCredentials({
     accountId: 'fakeAccountId',
     tempoToken: 'fakeToken'
