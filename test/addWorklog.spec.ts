@@ -1,6 +1,9 @@
+// @ts-ignore TS6059
+// Only for test purpose, isn't compiled to js sources
+import { mockCurrentDate } from './mocks/currentDate'
+
 import api from '../src/api/api'
 import worklogs from '../src/worklogs/worklogs'
-import { mockCurrentDate } from './mocks/currentDate'
 import authenticator from '../src/config/authenticator'
 import aliases from '../src/config/aliases'
 
