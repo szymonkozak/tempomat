@@ -8,6 +8,8 @@ import { add } from 'date-fns'
 
 jest.mock('../src/config/configStore', () => jest.requireActual('./mocks/configStore'))
 
+afterEach(() => { jest.clearAllMocks() })
+
 async function getTracker(issueKey: string): Promise<Tracker | undefined> {
     const config = await configStore.read()
     return config.trackers?.get(issueKey)
@@ -202,6 +204,45 @@ describe('tracker', () => {
             timeSpentSeconds: 600,
             startDate: '2020-02-28',
             startTime: '12:00:00'
+        })
+    })
+
+    test('can be stopped with remaining estimate for each interval', async () => {
+        await clearStore()
+        authenticate()
+        const apiMock = mockWorklogResponse()
+
+        await tempo.startTracker({
+            issueKeyOrAlias: 'ABC-123',
+            now: baseDate
+        })
+        await tempo.pauseTracker({
+            issueKeyOrAlias: 'ABC-123',
+            now: add(baseDate, { minutes: 10 })
+        })
+        await tempo.resumeTracker({
+            issueKeyOrAlias: 'ABC-123',
+            now: add(baseDate, { minutes: 20 })
+        })
+        await tempo.stopTracker({
+            issueKeyOrAlias: 'ABC-123',
+            remainingEstimate: '1h',
+            now: add(baseDate, { minutes: 30 })
+        })
+
+        expect(apiMock).toBeCalledWith({
+            issueKey: 'ABC-123',
+            timeSpentSeconds: 600,
+            startDate: '2020-02-28',
+            startTime: '12:00:00',
+            remainingEstimateSeconds: 3600
+        })
+        expect(apiMock).toBeCalledWith({
+            issueKey: 'ABC-123',
+            timeSpentSeconds: 600,
+            startDate: '2020-02-28',
+            startTime: '12:20:00',
+            remainingEstimateSeconds: 3600
         })
     })
 
