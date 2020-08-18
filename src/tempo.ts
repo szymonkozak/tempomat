@@ -138,7 +138,7 @@ export default {
 
             const intervalsWithInputs = createWorklogInputs(tracker)
             if (intervalsWithInputs.length === 0) {
-                console.log('There are no intervals with minmal length of 0 minutes.')
+                console.log('There are no intervals with minimal length of 0 minutes.')
                 await trackers.deleteTracker({ issueKeyOrAlias: tracker.issueKey })
                 return
             }
@@ -207,7 +207,7 @@ async function deleteWorklog(worklogIdInput: string): Promise<void> {
     const worklog = await worklogs.deleteWorklog(worklogIdInput)
     cli.action.stop('Done.')
     console.log(
-        chalk.greenBright(`Succesfully deleted worklog ${chalk.yellow(worklog.id)}.`),
+        chalk.greenBright(`Successfully deleted worklog ${chalk.yellow(worklog.id)}.`),
         `Deleted worklog details: ${worklog.issueKey}, ${worklog.interval?.startTime}-${worklog.interval?.endTime} (${worklog.duration})`
     )
 }

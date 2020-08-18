@@ -283,7 +283,7 @@ describe('tracker', () => {
         })
     })
 
-    test('can be paused consecutively mulitple times', async () => {
+    test('can be paused consecutively multiple times', async () => {
         await clearStore()
         authenticate()
         const apiMock = mockWorklogResponse()
@@ -354,7 +354,7 @@ describe('tracker', () => {
         })
     })
 
-    test('can be resumed consecutively mulitple times', async () => {
+    test('can be resumed consecutively multiple times', async () => {
         await clearStore()
         authenticate()
         const apiMock = mockWorklogResponse()
