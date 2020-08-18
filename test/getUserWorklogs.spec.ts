@@ -376,7 +376,7 @@ describe('get user worklogs', () => {
         })
     })
 
-    test('for specific date, but hours are logged without overhours', async () => {
+    test('for specific date, but hours are logged without overtime', async () => {
         mockCurrentDate(new Date('2020-02-03T12:00:00.000+01:00'))
         mockWorklogsResponse({
             results: [
