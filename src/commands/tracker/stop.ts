@@ -18,7 +18,8 @@ export default class Stop extends Command {
     static flags = {
         help: flags.help({ char: 'h' }),
         debug: flags.boolean(),
-        description: flags.string({ char: 'd', description: 'description for worklog' })
+        description: flags.string({ char: 'd', description: 'description for worklog' }),
+        'remaining-estimate': flags.string({ char: 'r', description: 'remaining estimate' })
     }
 
     static args = [
@@ -35,6 +36,7 @@ export default class Stop extends Command {
         tempo.stopTracker({
             issueKeyOrAlias: args.issue_key_or_alias,
             description: flags.description,
+            remainingEstimate: flags['remaining-estimate'],
             now: time.now()
         })
     }

@@ -21,6 +21,7 @@ export type PauseTrackerInput = {
 export type StopTrackerInput = {
     issueKeyOrAlias: string,
     description?: string,
+    remainingEstimate?: string,
     now: Date
 }
 

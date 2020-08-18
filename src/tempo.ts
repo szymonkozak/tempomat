@@ -136,7 +136,7 @@ export default {
                 return
             }
 
-            const intervalsWithInputs = createWorklogInputs(tracker)
+            const intervalsWithInputs = createWorklogInputs(tracker, input.remainingEstimate)
             if (intervalsWithInputs.length === 0) {
                 console.log('There are no intervals with minimal length of 0 minutes.')
                 await trackers.deleteTracker({ issueKeyOrAlias: tracker.issueKey })
@@ -212,7 +212,7 @@ async function deleteWorklog(worklogIdInput: string): Promise<void> {
     )
 }
 
-function createWorklogInputs(tracker: Tracker): [Interval, AddWorklogInput][] {
+function createWorklogInputs(tracker: Tracker, remainingEstimate?: string): [Interval, AddWorklogInput][] {
     return tracker.intervals.map(interval => {
         return [
             interval,
@@ -221,7 +221,8 @@ function createWorklogInputs(tracker: Tracker): [Interval, AddWorklogInput][] {
                 description: tracker.description,
                 when: fnsLightFormat(interval.start, 'yyyy-MM-dd'),
                 startTime: fnsLightFormat(interval.start, 'HH:mm'),
-                durationOrInterval: `${differenceInMinutes(interval.end, interval.start)}m`
+                durationOrInterval: `${differenceInMinutes(interval.end, interval.start)}m`,
+                remainingEstimate: remainingEstimate
             }
         ]
     })
