@@ -1,6 +1,9 @@
+// @ts-ignore TS6059
+// Only for test purpose, isn't compiled to js sources
+import { mockCurrentDate } from './mocks/currentDate'
+
 import api, { GetWorklogsRequest, GetWorklogsResponse, GetUserScheduleRequest, GetUserScheduleResponse } from '../src/api/api'
 import worklogs from '../src/worklogs/worklogs'
-import { mockCurrentDate } from './mocks/currentDate'
 import authenticator from '../src/config/authenticator'
 
 jest.mock('../src/config/configStore', () => jest.requireActual('./mocks/configStore'))
