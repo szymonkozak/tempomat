@@ -12,6 +12,7 @@ import aliases from '../config/aliases'
 const DATE_FORMAT = 'yyyy-MM-dd'
 const START_TIME_FORMAT = 'HH:mm:ss'
 const YESTERDAY_LITERALS = ['y', 'yesterday']
+const TODAY_REFERENCE_REGEX = /^t[-+][0-9]+$/
 
 export type AddWorklogInput = {
     issueKeyOrAlias: string
@@ -139,6 +140,11 @@ function parseWhenArg(now: Date, when: string | undefined): Date {
         const nowAtMidnight = new Date(now)
         nowAtMidnight.setHours(0, 0, 0, 0)
         return addDays(nowAtMidnight, -1)
+    }
+    if (when.match(TODAY_REFERENCE_REGEX)) {
+        const nowAtMidnight = new Date(now)
+        nowAtMidnight.setHours(0, 0, 0, 0)
+        return addDays(nowAtMidnight, parseInt(when.substr(1)))
     }
     const date = fnsParse(when, DATE_FORMAT, new Date())
     if (isValid(date)) {
