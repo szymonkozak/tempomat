@@ -287,7 +287,7 @@ describe('adds a worklog', () => {
     })
 
     test('with alias', async () => {
-        aliases.set('lunch', 'ABC-123')
+        await aliases.set('lunch', 'ABC-123')
 
         await worklogs.addWorklog({
             issueKeyOrAlias: 'lunch',
