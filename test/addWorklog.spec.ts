@@ -148,11 +148,41 @@ describe('adds a worklog', () => {
             })
         })
 
+        test('1h40m today with "today+0" alias', async () => {
+            await worklogs.addWorklog({
+                issueKeyOrAlias: 'ABC-123',
+                durationOrInterval: '1h40m',
+                when: 'today+0'
+            })
+
+            expect(addWorklogMock).toHaveBeenCalledWith({
+                issueKey: 'ABC-123',
+                timeSpentSeconds: 6000,
+                startDate: '2020-02-28',
+                startTime: '00:00:00'
+            })
+        })
+
         test('1h45m today with "t-0" alias', async () => {
             await worklogs.addWorklog({
                 issueKeyOrAlias: 'ABC-123',
                 durationOrInterval: '1h45m',
                 when: 't-0'
+            })
+
+            expect(addWorklogMock).toHaveBeenCalledWith({
+                issueKey: 'ABC-123',
+                timeSpentSeconds: 6300,
+                startDate: '2020-02-28',
+                startTime: '00:00:00'
+            })
+        })
+
+        test('1h45m today with "today-0" alias', async () => {
+            await worklogs.addWorklog({
+                issueKeyOrAlias: 'ABC-123',
+                durationOrInterval: '1h45m',
+                when: 'today-0'
             })
 
             expect(addWorklogMock).toHaveBeenCalledWith({
@@ -178,11 +208,41 @@ describe('adds a worklog', () => {
             })
         })
 
+        test('5h ten days in the future with "today+10" alias', async () => {
+            await worklogs.addWorklog({
+                issueKeyOrAlias: 'ABC-123',
+                durationOrInterval: '5h',
+                when: 'today+10'
+            })
+
+            expect(addWorklogMock).toHaveBeenCalledWith({
+                issueKey: 'ABC-123',
+                timeSpentSeconds: 18000,
+                startDate: '2020-03-09',
+                startTime: '00:00:00'
+            })
+        })
+
         test('30m five days in the past with "t-5" alias', async () => {
             await worklogs.addWorklog({
                 issueKeyOrAlias: 'ABC-123',
                 durationOrInterval: '30m',
                 when: 't-5'
+            })
+
+            expect(addWorklogMock).toHaveBeenCalledWith({
+                issueKey: 'ABC-123',
+                timeSpentSeconds: 1800,
+                startDate: '2020-02-23',
+                startTime: '00:00:00'
+            })
+        })
+
+        test('30m five days in the past with "today-5" alias', async () => {
+            await worklogs.addWorklog({
+                issueKeyOrAlias: 'ABC-123',
+                durationOrInterval: '30m',
+                when: 'today-5'
             })
 
             expect(addWorklogMock).toHaveBeenCalledWith({
