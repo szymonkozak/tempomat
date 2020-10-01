@@ -152,7 +152,7 @@ describe('adds a worklog', () => {
             await worklogs.addWorklog({
                 issueKeyOrAlias: 'ABC-123',
                 durationOrInterval: '1h45m',
-                when: 't+0'
+                when: 't-0'
             })
 
             expect(addWorklogMock).toHaveBeenCalledWith({
