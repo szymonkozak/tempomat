@@ -113,7 +113,7 @@ export default {
         return trackerStore.removeTracker(issueKey)
     },
 
-    async removeInterval(tracker: Tracker, interval: Interval) : Promise<Tracker> {
+    async removeInterval(tracker: Tracker, interval: Interval): Promise<Tracker> {
         const newIntervals = tracker.intervals.filter(it => it !== interval)
         return trackerStore.putTracker({
             issueKey: tracker.issueKey,

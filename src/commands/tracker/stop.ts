@@ -33,7 +33,7 @@ export default class Stop extends Command {
     async run() {
         const { args, flags } = this.parse(Stop)
         globalFlags.debug = flags.debug
-        tempo.stopTracker({
+        await tempo.stopTracker({
             issueKeyOrAlias: args.issue_key_or_alias,
             description: flags.description,
             remainingEstimate: flags['remaining-estimate'],

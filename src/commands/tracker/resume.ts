@@ -30,7 +30,7 @@ export default class Resume extends Command {
     async run() {
         const { args, flags } = this.parse(Resume)
         globalFlags.debug = flags.debug
-        tempo.resumeTracker({
+        await tempo.resumeTracker({
             issueKeyOrAlias: args.issue_key_or_alias,
             now: time.now()
         })
