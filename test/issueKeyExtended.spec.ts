@@ -1,14 +1,24 @@
 import aliases from '../src/config/aliases'
+import profiles from '../src/config/profiles'
 import issueKeyExtended, { AliasesPosition } from '../src/issueKeyExtended'
 import chalk from 'chalk'
+import authenticator from '../src/config/authenticator'
 
-jest.mock('../src/config/configStore', () => jest.requireActual('./mocks/configStore'))
+jest.mock('../src/config/appConfigStore', () => jest.requireActual('./mocks/appConfigStore'));
 
-aliases.set('lunch', 'ABC-123')
-aliases.set('sm', 'ABC-124')
-aliases.set('daily', 'ABC-124')
-aliases.set('daily2', 'abc-124')
-aliases.set('foobarfoobarfoobarfoobarfoobar', 'ABC-125')
+(async function () {
+    await authenticator.saveCredentials({
+        accountId: 'fakeAccountId',
+        tempoToken: 'fakeToken'
+    }, 'default')
+
+    await profiles.setSelectedProfile('default')
+    await aliases.set('lunch', 'ABC-123')
+    await aliases.set('sm', 'ABC-124')
+    await aliases.set('daily', 'ABC-124')
+    await aliases.set('daily2', 'abc-124')
+    await aliases.set('foobarfoobarfoobarfoobarfoobar', 'ABC-125')
+})()
 
 test('only issue key (left aliases position)', async () => {
     expect(await issueKeyExtended('ABC-122', AliasesPosition.Left))
@@ -21,6 +31,7 @@ test('only issue key (right aliases position)', async () => {
 })
 
 test('issue key and one alias (left aliases position)', async () => {
+    console.log(await profiles.selectedProfile())
     expect(await issueKeyExtended('ABC-123', AliasesPosition.Left))
         .toStrictEqual(`${chalk.gray('(lunch)')} ${chalk.bold('ABC-123')}`)
 })

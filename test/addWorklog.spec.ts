@@ -7,14 +7,14 @@ import worklogs from '../src/worklogs/worklogs'
 import authenticator from '../src/config/authenticator'
 import aliases from '../src/config/aliases'
 
-jest.mock('../src/config/configStore', () => jest.requireActual('./mocks/configStore'))
+jest.mock('../src/config/appConfigStore', () => jest.requireActual('./mocks/appConfigStore'))
 
 afterEach(() => { jest.clearAllMocks() })
 
 authenticator.saveCredentials({
     accountId: 'fakeAccountId',
     tempoToken: 'fakeToken'
-})
+}, 'default')
 
 describe('adds a worklog', () => {
     const addWorklogMock = jest.fn()

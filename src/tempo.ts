@@ -20,10 +20,10 @@ import { lightFormat as fnsLightFormat, differenceInMinutes } from 'date-fns'
 
 export default {
 
-    async setup() {
+    async setup(profileName?: string) {
         try {
             const credentials = await prompts.promptCredentials()
-            await authenticator.saveCredentials(credentials)
+            await authenticator.saveCredentials(credentials, profileName ?? 'default')
             console.log(chalk.greenBright('Setup completed successfully. Use --help to list available commands.'))
             const aliasesCommand = chalk.bold.blue(`printf "alias tl='${appName} l'\\nalias tls='${appName} ls'\\nalias td='${appName} d'" >> ~/.zshrc; source ~/.zshrc`)
             const autocompleteCommand = chalk.bold.blue('tempo autocomplete')
@@ -74,22 +74,21 @@ export default {
     },
 
     async setAlias(aliasName: string, issueKey: string) {
-        execute(async () => {
+        await execute(async () => {
             await aliases.set(aliasName, issueKey)
         })
     },
 
     async deleteAlias(aliasName: string) {
-        execute(async () => {
+        await execute(async () => {
             await aliases.delete(aliasName)
         })
     },
 
     async listAliases() {
         const all = await aliases.all()
-        /* eslint-disable no-unused-expressions */
-        all?.forEach((value, key, _) => {
-            console.log(`${key} => ${value}`)
+        Object.entries(all).forEach(([key, value]) => {
+            console.log(`${key}: ${value}`)
         })
     },
 
@@ -183,7 +182,7 @@ export default {
     },
 
     async listTrackers(now: Date) {
-        execute(async () => {
+        await execute(async () => {
             const userTrackers = await trackers.getTrackers()
             for (const tracker of userTrackers) {
                 const table = await trackersTable.render(tracker, now)

@@ -6,7 +6,7 @@ import configStore from '../src/config/configStore'
 import { Tracker } from '../src/config/trackerStore'
 import { add } from 'date-fns'
 
-jest.mock('../src/config/configStore', () => jest.requireActual('./mocks/configStore'))
+jest.mock('../src/config/appConfigStore', () => jest.requireActual('./mocks/appConfigStore'))
 
 afterEach(() => { jest.clearAllMocks() })
 
@@ -23,7 +23,7 @@ function authenticate() {
     authenticator.saveCredentials({
         accountId: 'fakeAccountId',
         tempoToken: 'fakeToken'
-    })
+    }, 'default')
 }
 
 function mockWorklogResponse(

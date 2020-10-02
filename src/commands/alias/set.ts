@@ -30,6 +30,6 @@ export default class Set extends Command {
     async run() {
         const { args, flags } = this.parse(Set)
         globalFlags.debug = flags.debug
-        tempo.setAlias(args.alias_name, args.issue_key)
+        await tempo.setAlias(args.alias_name, args.issue_key)
     }
 }

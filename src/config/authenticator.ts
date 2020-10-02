@@ -1,4 +1,4 @@
-import configStore from './configStore'
+import appConfigStore from './appConfigStore'
 
 export type Credentials = {
     tempoToken?: string;
@@ -6,26 +6,40 @@ export type Credentials = {
 }
 
 export default {
-
-    async saveCredentials(credentials: Credentials) {
-        const config = await configStore.read()
-        config.tempoToken = credentials.tempoToken
-        config.accountId = credentials.accountId
-        await configStore.save(config)
+    saveCredentials: async function (credentials: Credentials, profileName: string) {
+        const appConfig = await appConfigStore.read()
+        let profile = appConfig.profiles?.[profileName]
+        if (!profile) {
+            const profiles = appConfig.profiles
+            if (!profiles) appConfig.profiles = {}
+            profile = {}
+            // @ts-ignore
+            appConfig?.profiles?.[profileName] = profile
+        }
+        appConfig.selectedProfile = profileName
+        profile.tempoToken = credentials.tempoToken
+        profile.accountId = credentials.accountId
+        await appConfigStore.save(appConfig)
     },
 
-    async getCredentials(): Promise<Credentials> {
-        const config = await configStore.read()
+    async getSelectedProfileCredentials(): Promise<Credentials | undefined> {
+        const appConfig = await appConfigStore.read()
+        const selectedProfileName = appConfig.selectedProfile
+        if (!selectedProfileName) return undefined
+        const selectedProfile = appConfig.profiles?.[selectedProfileName]
         return {
-            tempoToken: config.tempoToken,
-            accountId: config.accountId
+            tempoToken: selectedProfile?.tempoToken,
+            accountId: selectedProfile?.accountId
         }
     },
 
-    async hasTempoToken(): Promise<boolean> {
+    async hasSelectedProfileWithToken(): Promise<boolean> {
         try {
-            const config = await configStore.read()
-            return config.tempoToken !== undefined
+            const appConfig = await appConfigStore.read()
+            const selectedProfileName = appConfig.selectedProfile
+            if (!selectedProfileName) return false
+            const selectedProfile = appConfig.profiles?.[selectedProfileName]
+            return selectedProfile?.tempoToken !== undefined
         } catch (e) {
             return false
         }

@@ -42,7 +42,7 @@ export type UserWorklogs = {
 export default {
 
     async addWorklog(input: AddWorklogInput): Promise<Worklog> {
-        await checkToken()
+        await checkProfile()
         const referenceDate = parseWhenArg(time.now(), input.when)
         const parseResult = timeParser.parse(input.durationOrInterval, referenceDate)
         if (parseResult == null) {
@@ -64,7 +64,7 @@ export default {
     },
 
     async deleteWorklog(worklogIdInput: string): Promise<Worklog> {
-        await checkToken()
+        await checkProfile()
         const worklogId = parseInt(worklogIdInput)
         if (!Number.isInteger(worklogId)) {
             throw Error('Error. Worklog id should be an integer number.')
@@ -76,8 +76,9 @@ export default {
     },
 
     async getUserWorklogs(when?: string): Promise<UserWorklogs> {
-        await checkToken()
-        const credentials = await authenticator.getCredentials()
+        await checkProfile()
+        const credentials = await authenticator.getSelectedProfileCredentials()
+        if (!credentials) throw Error('Tempo token not set. Setup tempomat by `tempo setup` command.')
         const now = time.now()
         const date = parseWhenArg(now, when)
         const formattedDate = format(date, DATE_FORMAT)
@@ -110,7 +111,8 @@ function remainingEstimateSeconds(referenceDate: Date, remainingEstimate?: strin
 }
 
 async function generateWorklogs(worklogsResponse: GetWorklogsResponse, formattedDate: string): Promise<Worklog[]> {
-    const credentials = await authenticator.getCredentials()
+    const credentials = await authenticator.getSelectedProfileCredentials()
+    if (!credentials) throw Error('Tempo token not set. Setup tempomat by `tempo setup` command.')
     return worklogsResponse.results
         .filter((e: WorklogEntity) => e.author.accountId === credentials.accountId && e.startDate === formattedDate)
         .map((e: WorklogEntity) => toWorklog(e))
@@ -128,8 +130,8 @@ function toWorklog(entity: WorklogEntity) {
     }
 }
 
-async function checkToken() {
-    const isTokenSet = await authenticator.hasTempoToken()
+async function checkProfile() {
+    const isTokenSet = await authenticator.hasSelectedProfileWithToken()
     if (!isTokenSet) {
         throw Error('Tempo token not set. Setup tempomat by `tempo setup` command.')
     }

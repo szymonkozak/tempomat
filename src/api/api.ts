@@ -59,7 +59,8 @@ export type IssueEntity = {
 export default {
 
     async addWorklog(request: AddWorklogRequest): Promise<WorklogEntity> {
-        const credentials = await authenticator.getCredentials()
+        const credentials = await authenticator.getSelectedProfileCredentials()
+        if (!credentials) throw Error('Tempo token not set. Setup tempomat by `tempo setup` command.')
         const body = { ...request, authorAccountId: credentials.accountId }
         return execute(async () => {
             const response = await tempoAxios.post('/worklogs', body)
@@ -84,10 +85,15 @@ export default {
     },
 
     async getWorklogs(request: GetWorklogsRequest): Promise<GetWorklogsResponse> {
-        const credentials = await authenticator.getCredentials()
+        const credentials = await authenticator.getSelectedProfileCredentials()
+        if (!credentials) throw Error('Tempo token not set. Setup tempomat by `tempo setup` command.')
         return execute(async () => {
             const response = await tempoAxios.get(`/worklogs/user/${credentials.accountId}`, {
-                params: { from: request.fromDate, to: request.toDate, limit: 1000 }
+                params: {
+                    from: request.fromDate,
+                    to: request.toDate,
+                    limit: 1000
+                }
             })
             debugLog(response)
             const allResults = await fetchPaginatedResults<WorklogEntity>(response.data.results, response)
@@ -98,7 +104,10 @@ export default {
     async getUserSchedule(request: GetUserScheduleRequest): Promise<GetUserScheduleResponse> {
         return execute(async () => {
             const response = await tempoAxios.get('/user-schedule', {
-                params: { from: request.fromDate, to: request.toDate }
+                params: {
+                    from: request.fromDate,
+                    to: request.toDate
+                }
             })
             debugLog(response)
             return {

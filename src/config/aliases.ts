@@ -1,41 +1,51 @@
-import configStore from './configStore'
+import profiles from '../config/profiles'
+import authenticator from './authenticator'
 
 export default {
 
     async getIssueKey(aliasName: string): Promise<string | undefined> {
-        const config = await configStore.read()
-        return config.aliases?.get(aliasName)
+        const profile = await profiles.selectedProfile()
+        return profile?.profileConfig?.aliases?.[aliasName]
     },
 
     async getAliasNames(issueKey: string): Promise<Array<string>> {
-        const config = await configStore.read()
-        if (!config.aliases) return []
-        const entries = Array.from(config.aliases.entries()).filter(entry => {
-            return entry[1].toUpperCase() === issueKey.toUpperCase()
-        })
-        const aliases = entries.map(value => value[0])
-        return aliases
+        const profile = await profiles.selectedProfile()
+        if (!profile?.profileConfig?.aliases) return []
+        return Object.entries(profile.profileConfig.aliases)
+            .filter(([_, it]) => it.toUpperCase() === issueKey.toUpperCase())
+            .map(([aliasName, _]) => aliasName)
     },
 
     async set(aliasName: string, issueKey: string) {
-        const config = await configStore.read()
-        if (!config.aliases) {
-            config.aliases = new Map<string, string>()
+        await checkProfile()
+        const profileConfig = await profiles.getProfileConfig()
+        if (profileConfig) {
+            // @ts-ignore
+            profileConfig?.aliases[aliasName] = issueKey
+            await profiles.saveProfileConfig(profileConfig)
         }
-        /* eslint-disable no-unused-expressions */
-        config.aliases.set(aliasName, issueKey)
-        await configStore.save(config)
     },
 
     async delete(aliasName: string) {
-        const config = await configStore.read()
-        /* eslint-disable no-unused-expressions */
-        config.aliases?.delete(aliasName)
-        await configStore.save(config)
+        await checkProfile()
+        const profileConfig = await profiles.getProfileConfig()
+        if (profileConfig) {
+            if (profileConfig.aliases) delete profileConfig.aliases[aliasName]
+            await profiles.saveProfileConfig(profileConfig)
+        }
     },
 
-    async all(): Promise<Map<string, string> | undefined> {
-        const config = await configStore.read()
-        return config.aliases
+    async all(): Promise<{ [key: string]: string }> {
+        await checkProfile()
+        const profile = await profiles.selectedProfile()
+        return profile?.profileConfig?.aliases ?? {}
+    }
+}
+
+// TODO: Remove duplication
+async function checkProfile() {
+    const isTokenSet = await authenticator.hasSelectedProfileWithToken()
+    if (!isTokenSet) {
+        throw Error('Tempo token not set. Setup tempomat by `tempo setup` command.')
     }
 }

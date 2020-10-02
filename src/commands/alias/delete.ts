@@ -25,6 +25,6 @@ export default class Delete extends Command {
     async run() {
         const { args, flags } = this.parse(Delete)
         globalFlags.debug = flags.debug
-        tempo.deleteAlias(args.alias_name)
+        await tempo.deleteAlias(args.alias_name)
     }
 }

@@ -1,4 +1,4 @@
-import configStore from './configStore'
+import configStore from './appConfigStore'
 
 export type Tracker = {
     issueKey: string

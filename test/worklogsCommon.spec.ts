@@ -1,5 +1,5 @@
 import worklogs from '../src/worklogs/worklogs'
-jest.mock('../src/config/configStore', () => jest.requireActual('./mocks/configStore'))
+jest.mock('../src/config/appConfigStore', () => jest.requireActual('./mocks/appConfigStore'))
 
 afterEach(() => { jest.clearAllMocks() })
 

@@ -6,9 +6,11 @@ const tempoAxios = axios.create({
 })
 
 tempoAxios.interceptors.request.use(async function (axiosConfig) {
-    if (await authenticator.hasTempoToken()) {
-        const credentials = await authenticator.getCredentials()
-        axiosConfig.headers.Authorization = `Bearer ${credentials.tempoToken}`
+    if (await authenticator.hasSelectedProfileWithToken()) {
+        const credentials = await authenticator.getSelectedProfileCredentials()
+        if (credentials) {
+            axiosConfig.headers.Authorization = `Bearer ${credentials.tempoToken}`
+        }
     }
     return axiosConfig
 })

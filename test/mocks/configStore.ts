@@ -1,19 +1,20 @@
-import { Config } from '../../src/config/configStore'
+import { LegacyAppConfig } from '../../src/config/migration/legacyConfigStore'
 
-let savedConfig: Config = {
+let savedConfig: LegacyAppConfig = {
     tempoToken: undefined,
     accountId: undefined,
     aliases: undefined,
     trackers: undefined
 }
 
+// TODO: Check if it is necessary
 export default {
 
-    async save(config: Config) {
+    async save(config: LegacyAppConfig) {
         savedConfig = config
     },
 
-    async read(): Promise<Config> {
+    async read(): Promise<LegacyAppConfig> {
         return new Promise((resolve, reject) => resolve(savedConfig))
     }
 }

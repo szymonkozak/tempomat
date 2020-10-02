@@ -18,6 +18,6 @@ export default class List extends Command {
     async run() {
         const { flags } = this.parse(List)
         globalFlags.debug = flags.debug
-        tempo.listAliases()
+        await tempo.listAliases()
     }
 }

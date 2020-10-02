@@ -1,0 +1,37 @@
+version: 2
+selectedProfile: default
+profiles:
+  default:
+    accountId: 123
+    token: 345
+    profileConfig:
+      settings:
+        someFlag: true
+        defaultRemainingEstimate: 1h
+      aliases:
+        sm: abc-123
+        daily: abc-123
+        lunch: abc-321
+      attributes:
+        _EXTERNALREF_: foo
+        _COLOR_: green
+  jake:
+    accountId: 123
+    token: 345
+    profileConfig:
+      settings:
+        defaultRemainingEstimate: 1h
+      aliases: {}
+      attributes:
+        _EXTERNALREF_: foo
+        _COLOR_: green
+globalConfig:
+  settings:
+    defaultRemainingEstimate: 0h
+  aliases:
+    sm: abc-123
+    daily: abc-123
+    lunch: abc-321
+  attributes:
+    _EXTERNALREF_: foo
+    _COLOR_: green
