@@ -7,7 +7,13 @@ import { appName } from './appName'
 import { trimIndent } from './trimIndent'
 import cli from 'cli-ux'
 import aliases from './config/aliases'
-import trackers, { StartTrackerInput, PauseTrackerInput, StopTrackerInput, ResumeTrackerInput, DeleteTrackerInput } from './trackers/trackers'
+import trackers, {
+    StartTrackerInput,
+    PauseTrackerInput,
+    StopTrackerInput,
+    ResumeTrackerInput,
+    DeleteTrackerInput
+} from './trackers/trackers'
 import { Tracker } from './config/trackerStore'
 import * as trackersTable from './trackers/trackersTable'
 import { lightFormat as fnsLightFormat, differenceInMinutes } from 'date-fns'

@@ -13,7 +13,7 @@ export default {
         const profileInfo = await promptProfileInfo()
         const tempoToken = await promptTempoToken(profileInfo.hostname)
 
-        if (!tempoToken) throw Error("Failure. Tempo token wasn't set properly.")
+        if (!tempoToken) throw Error('Failure. Tempo token wasn\'t set properly.')
 
         return {
             tempoToken: tempoToken,
@@ -35,7 +35,7 @@ async function promptProfileInfo(): Promise<ProfileInfo> {
     if (profileInfo.hostname.length > 0 && profileInfo.accountId.length > 0) {
         return profileInfo
     } else {
-        throw Error("Can't parse profile URL")
+        throw Error('Can\'t parse profile URL')
     }
 }
 

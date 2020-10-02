@@ -33,7 +33,7 @@ export default class Start extends Command {
     async run() {
         const { args, flags } = this.parse(Start)
         globalFlags.debug = flags.debug
-        tempo.startTracker({
+        await tempo.startTracker({
             issueKeyOrAlias: args.issue_key_or_alias,
             description: flags.description,
             now: time.now(),

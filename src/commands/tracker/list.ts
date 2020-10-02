@@ -11,6 +11,6 @@ export default class List extends Command {
     ]
 
     async run() {
-        tempo.listTrackers(time.now())
+        await tempo.listTrackers(time.now())
     }
 }
