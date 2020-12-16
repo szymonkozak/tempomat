@@ -13,6 +13,15 @@ export type AddWorklogRequest = {
     remainingEstimateSeconds?: number
 }
 
+export type UpdateWorklogRequest = {
+    issueKey: string;
+    timeSpentSeconds: number;
+    startDate: string;
+    startTime: string;
+    description?: string;
+    remainingEstimateSeconds?: number
+}
+
 export type GetWorklogsRequest = {
     fromDate: string;
     toDate: string;
@@ -78,6 +87,16 @@ export default {
     async getWorklog(worklogId: number): Promise<WorklogEntity> {
         return execute(async () => {
             const response = await tempoAxios.get(`/worklogs/${worklogId}`)
+            debugLog(response)
+            return response.data
+        })
+    },
+
+    async updateWorklog(worklogId: number, request: UpdateWorklogRequest): Promise<WorklogEntity> {
+        const credentials = await authenticator.getCredentials()
+        const body = { ...request, authorAccountId: credentials.accountId}
+        return execute(async () => {
+            const response = await tempoAxios.put(`/worklogs/${worklogId}`, body)
             debugLog(response)
             return response.data
         })

@@ -1,5 +1,5 @@
 import authenticator from './config/authenticator'
-import worklogs, { AddWorklogInput } from './worklogs/worklogs'
+import worklogs, {AddWorklogInput, UpdateWorklogInput} from './worklogs/worklogs'
 import prompts from './config/prompts'
 import * as worklogsTable from './worklogs/worklogsTable'
 import chalk from 'chalk'
@@ -61,6 +61,14 @@ export default {
                 await deleteWorklog(worklogId)
             })
         }
+    },
+
+    async updateUserWorklog(worklog_id: string, input: UpdateWorklogInput) {
+        return execute(async () => {
+            cli.action.start(`Updating worklog with id ${worklog_id}`)
+            const worklog = await worklogs.updateWorklog(worklog_id, input)
+            cli.action.stop('Done.')
+        })
     },
 
     async listUserWorklogs(when?: string, verbose = false) {

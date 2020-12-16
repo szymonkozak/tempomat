@@ -24,6 +24,15 @@ export type AddWorklogInput = {
     remainingEstimate?: string
 }
 
+export type UpdateWorklogInput = {
+    issueKeyOrAlias?: string
+    durationOrInterval?: string
+    description?: string
+    startTime?: string,
+    remainingEstimate?: string,
+    when?: string
+}
+
 export type Worklog = {
     id: string,
     interval?: Interval,
@@ -95,6 +104,34 @@ export default {
             credentials.accountId
         )
         return { worklogs, date, scheduleDetails }
+    },
+
+    async updateWorklog(worklogIdInput: string, input: UpdateWorklogInput) {
+        const worklogId = parseInt(worklogIdInput)
+        if (!Number.isInteger(worklogId)) {
+            throw Error('Error. Worklog id should be an integer number.')
+        }
+        const currentWorklog = await api.getWorklog(worklogId)
+
+        const referenceDate = parseWhenArg(time.now(), input.when ? input.when : currentWorklog.startDate);
+
+        let parseResult = undefined
+        if(input.durationOrInterval) {
+            parseResult = timeParser.parse(input.durationOrInterval, referenceDate)
+        }
+
+        const issueKey = input.issueKeyOrAlias ? input.issueKeyOrAlias : currentWorklog.issue.key;
+        const issue = await aliases.getIssueKey(issueKey) ?? issueKey
+
+        const worklogEntity = await api.updateWorklog(worklogId, {
+            issueKey: issue,
+            timeSpentSeconds: parseResult ? parseResult.seconds : currentWorklog.timeSpentSeconds,
+            startDate: format(referenceDate, DATE_FORMAT),
+            startTime: parseResult ? startTime(parseResult, input.startTime, referenceDate) : currentWorklog.startTime,
+            description: input.description ? input.description : currentWorklog.description,
+            remainingEstimateSeconds: remainingEstimateSeconds(referenceDate, input.remainingEstimate)
+        })
+        return toWorklog(worklogEntity)
     }
 }
 
