@@ -53,13 +53,7 @@ export default {
     async addWorklog(input: AddWorklogInput): Promise<Worklog> {
         await checkToken()
         const referenceDate = parseWhenArg(time.now(), input.when)
-        const parseResult = timeParser.parse(input.durationOrInterval, referenceDate)
-        if (parseResult == null) {
-            throw Error(`Error parsing "${input.durationOrInterval}". Try something like 1h10m or 11-12:30. See ${appName} log --help for more examples.`)
-        }
-        if (parseResult.seconds <= 0) {
-            throw Error('Error. Minutes worked must be larger than 0.')
-        }
+        const parseResult = parseInputDate(input.durationOrInterval, referenceDate)
         const issueKey = await aliases.getIssueKey(input.issueKeyOrAlias) ?? input.issueKeyOrAlias
         const worklogEntity = await api.addWorklog({
             issueKey: issueKey,
@@ -112,12 +106,10 @@ export default {
             throw Error('Error. Worklog id should be an integer number.')
         }
         const currentWorklog = await api.getWorklog(worklogId)
-
         const referenceDate = parseWhenArg(time.now(), input.when ? input.when : currentWorklog.startDate);
-
         let parseResult = undefined
         if(input.durationOrInterval) {
-            parseResult = timeParser.parse(input.durationOrInterval, referenceDate)
+            parseResult = parseInputDate(input.durationOrInterval, referenceDate)
         }
 
         const issueKey = input.issueKeyOrAlias ? input.issueKeyOrAlias : currentWorklog.issue.key;
@@ -139,6 +131,17 @@ export default {
         }
         return toWorklog(worklogEntity)
     }
+}
+
+function parseInputDate(durationOrInterval: string, referenceDate: Date) : ParseResult {
+    const parseResult = timeParser.parse(durationOrInterval, referenceDate);
+    if (parseResult == null) {
+        throw Error(`Error parsing "${durationOrInterval}". Try something like 1h10m or 11-12:30. See ${appName} log --help for more examples.`)
+    }
+    if (parseResult.seconds <= 0) {
+        throw Error('Error. Minutes worked must be larger than 0.')
+    }
+    return parseResult;
 }
 
 function remainingEstimateSeconds(referenceDate: Date, remainingEstimate?: string): number | undefined {
