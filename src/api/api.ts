@@ -13,15 +13,6 @@ export type AddWorklogRequest = {
     remainingEstimateSeconds?: number
 }
 
-export type UpdateWorklogRequest = {
-    issueKey: string;
-    timeSpentSeconds: number;
-    startDate: string;
-    startTime: string;
-    description?: string;
-    remainingEstimateSeconds?: number
-}
-
 export type GetWorklogsRequest = {
     fromDate: string;
     toDate: string;
@@ -92,7 +83,7 @@ export default {
         })
     },
 
-    async updateWorklog(worklogId: number, request: UpdateWorklogRequest): Promise<WorklogEntity> {
+    async updateWorklog(worklogId: number, request: AddWorklogRequest): Promise<WorklogEntity> {
         const credentials = await authenticator.getCredentials()
         const body = { ...request, authorAccountId: credentials.accountId}
         return execute(async () => {
