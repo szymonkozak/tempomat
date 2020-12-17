@@ -122,15 +122,21 @@ export default {
 
         const issueKey = input.issueKeyOrAlias ? input.issueKeyOrAlias : currentWorklog.issue.key;
         const issue = await aliases.getIssueKey(issueKey) ?? issueKey
-
-        const worklogEntity = await api.updateWorklog(worklogId, {
+        let worklogEntity;
+        const request = {
             issueKey: issue,
             timeSpentSeconds: parseResult ? parseResult.seconds : currentWorklog.timeSpentSeconds,
             startDate: format(referenceDate, DATE_FORMAT),
             startTime: parseResult ? startTime(parseResult, input.startTime, referenceDate) : currentWorklog.startTime,
             description: input.description ? input.description : currentWorklog.description,
             remainingEstimateSeconds: remainingEstimateSeconds(referenceDate, input.remainingEstimate)
-        })
+        };
+        if(input.issueKeyOrAlias) {
+            await this.deleteWorklog(worklogIdInput);
+            worklogEntity = await api.addWorklog(request);
+        } else {
+            worklogEntity = await api.updateWorklog(worklogId, request)
+        }
         return toWorklog(worklogEntity)
     }
 }
