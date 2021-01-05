@@ -64,7 +64,7 @@
     "@oclif/plugin-warn-if-update-available": "^1.7.0",
     "@types/lodash": "^4.14.149",
     "@types/node": "^13.7.1",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "chalk": "^3.0.0",
     "cli-table3": "^0.5.1",
     "cli-truncate": "^2.1.0",
