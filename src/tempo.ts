@@ -1,5 +1,6 @@
 import authenticator from './config/authenticator'
 import worklogs, { AddWorklogInput } from './worklogs/worklogs'
+import timesheets, { SubmitTimesheetInput } from './timesheets/timesheets'
 import prompts from './config/prompts'
 import * as worklogsTable from './worklogs/worklogsTable'
 import chalk from 'chalk'
@@ -191,7 +192,31 @@ export default {
                 console.log(table.toString())
             }
         })
-    }
+    },
+
+    async submitTimesheet(input: SubmitTimesheetInput): Promise<boolean> {
+        return execute(async () => {
+            cli.action.start('Submitting timesheet')
+            const timesheet = await timesheets.submitTimesheet(input)
+            cli.action.stop('Done.')
+            console.log(chalk.greenBright(`Successfully submitted timesheet to ${timesheet.reviewer.displayName} for approval.`))
+        })
+    },
+
+    async getReviewers(): Promise<boolean> {
+        return execute(async () => {
+            cli.action.start('Getting reviewers')
+            const reviewers = await timesheets.getReviewers()
+            cli.action.stop(`Done.Reviewers for the current user:`)
+            console.log(`Reviewers for the current user:`)
+            console.log(`AccountId\t\t\t|\tDisplay Name`)
+            console.log(`=========\t\t\t|\t============`)
+            reviewers.forEach(reviewer => {
+                console.log(`${reviewer.accountId}\t|\t${reviewer.displayName}`)
+            });
+            
+        })
+    },
 }
 
 async function execute(action: () => Promise<void>): Promise<boolean> {
