@@ -2,6 +2,9 @@
 
 [Tempo.io](https://tempo.io) cloud CLI
 
+> [!WARNING]  
+> This tool doesn't work currently as Tempo API v3 was disabled. More details here: https://github.com/szymonkozak/tempomat/issues/66
+
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/tempomat.svg)](https://npmjs.org/package/tempomat)
 [![License](https://img.shields.io/npm/l/tempomat.svg)](https://github.com/szymonkozak/tempomat/blob/master/LICENSE)
