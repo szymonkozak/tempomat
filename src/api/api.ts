@@ -23,6 +23,13 @@ export type GetUserScheduleRequest = {
     toDate: string;
 }
 
+export type SubmitTimesheetRequest = {
+    comment: string;
+    reviewerAccountId: string;
+    from: Date;
+    to: Date;
+}
+
 export type GetUserScheduleResponse = {
     results: ScheduleEntity[];
 }
@@ -54,6 +61,59 @@ export type AuthorEntity = {
 export type IssueEntity = {
     self: string;
     key: string;
+}
+
+export type TimesheetResponse = {
+    actions: Actions;
+    period: Period;
+    requiredSeconds: number;
+    reviewer: UserEntity;
+    self: string;
+    status: StatusEntity;
+    timeSpentSeconds: number;
+    user: UserEntity;
+    worklogs: SelfEntity;
+}
+
+export interface Actions {
+    approve: SelfEntity;
+    reject: SelfEntity;
+    reopen: SelfEntity;
+    submit: SelfEntity;
+}
+
+export interface Period {
+    from: string;
+    to: string;
+}
+
+export interface StatusEntity {
+    actor: UserEntity;
+    comment: string;
+    key: string;
+    requiredSecondsAtSubmit: number;
+    timeSpentSecondsAtSubmit: number;
+    updatedAt: string;
+}
+
+export interface UserEntity {
+    accountId: string;
+    self: string;
+    displayName: string;
+}
+
+export interface ReviewersMetadataEntity {
+    count: number;
+}
+
+export interface ReviewersResponse {
+    metadata: ReviewersMetadataEntity;
+    results: UserEntity[];
+    self: string;
+}
+
+export interface SelfEntity {
+    self: string;
 }
 
 export default {
@@ -104,6 +164,32 @@ export default {
             return {
                 results: response.data.results
             }
+        })
+    },
+
+    async submitTimesheet(request: SubmitTimesheetRequest): Promise<TimesheetResponse> {
+        const credentials = await authenticator.getCredentials()
+        const fromDate = request.from.toISOString().split('T')[0]
+        const toDate = request.to.toISOString().split('T')[0]
+        const url = `/timesheet-approvals/user/${credentials.accountId}/submit?from=${fromDate}&to=${toDate}`
+        const body = {
+            comment: request.comment,
+            reviewerAccountId: request.reviewerAccountId
+        }
+
+        return execute(async () => {
+            const response = await tempoAxios.post(url, body)
+            debugLog(response)
+            return response.data
+        })
+    },
+
+    async getReviewers(): Promise<ReviewersResponse> {
+        const credentials = await authenticator.getCredentials()
+        return execute(async () => {
+            const response = await tempoAxios.get(`/timesheet-approvals/user/${credentials.accountId}/reviewers`)
+            debugLog(response)
+            return response.data
         })
     }
 }
