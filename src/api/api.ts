@@ -108,7 +108,6 @@ export interface StatusEntity {
 export interface UserEntity {
     accountId: string;
     self: string;
-    displayName: string;
 }
 
 export interface ReviewersMetadataEntity {

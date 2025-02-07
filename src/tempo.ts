@@ -200,7 +200,7 @@ export default {
             cli.action.start('Submitting timesheet')
             const timesheet = await timesheets.submitTimesheet(input)
             cli.action.stop('Done.')
-            console.log(chalk.greenBright(`Successfully submitted timesheet to ${timesheet.reviewer.displayName} for approval.`))
+            console.log(chalk.greenBright(`Successfully submitted timesheet to ${timesheet.reviewer.accountId} for approval.`))
         })
     },
 
