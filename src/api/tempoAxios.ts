@@ -2,7 +2,7 @@ import axios from 'axios'
 import authenticator from '../config/authenticator'
 
 const tempoAxios = axios.create({
-    baseURL: 'https://api.tempo.io/core/3'
+    baseURL: 'https://api.tempo.io/4'
 })
 
 tempoAxios.interceptors.request.use(async function (axiosConfig) {

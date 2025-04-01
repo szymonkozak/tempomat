@@ -5,7 +5,7 @@ import flags from '../globalFlags'
 import { appName } from '../appName'
 
 export type AddWorklogRequest = {
-    issueKey: string;
+    issueId: string;
     timeSpentSeconds: number;
     startDate: string;
     startTime: string;

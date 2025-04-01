@@ -53,7 +53,7 @@ export default {
         }
         const issueKey = await aliases.getIssueKey(input.issueKeyOrAlias) ?? input.issueKeyOrAlias
         const worklogEntity = await api.addWorklog({
-            issueKey: issueKey,
+            issueId: issueKey,
             timeSpentSeconds: parseResult.seconds,
             startDate: format(referenceDate, DATE_FORMAT),
             startTime: startTime(parseResult, input.startTime, referenceDate),
