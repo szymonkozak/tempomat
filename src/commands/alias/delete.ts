@@ -17,7 +17,8 @@ export default class Delete extends Command {
 
     static args = {
         alias_name: Args.string({description: 'Alias name', required: true})
-      }
+    }
+    
     async run() {
         const { args, flags } = await this.parse(Delete)
         globalFlags.debug = flags.debug

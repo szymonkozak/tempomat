@@ -1,4 +1,4 @@
-import { Command, Args } from '@oclif/core'
+import { Command } from '@oclif/core'
 import { appName } from '../appName'
 import tempo from '../tempo'
 
