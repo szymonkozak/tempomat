@@ -41,7 +41,7 @@ export default defineConfig([{
         indent: ["error", 4],
     },
 }, {
-    files: ["**/*.ts", "**/*.tsx"],
+    files: ["**/*.ts"],
 
     rules: {
         "@typescript-eslint/no-unused-vars": [2, {

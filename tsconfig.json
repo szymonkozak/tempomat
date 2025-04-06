@@ -2,9 +2,9 @@
     "compilerOptions": {
         "strict": true,
         "module": "commonjs",
+        "target": "es2020",
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
-        "target": "es2019",
         "noImplicitAny": true,
         "strictNullChecks": true,
         "moduleResolution": "node",
