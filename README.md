@@ -23,7 +23,7 @@ Save time, it's much easier and faster to log time and browse worklogs using tem
 
 ## Usage
 ```
-$ npm install -g tempomat
+$ npm install -g tempomat@beta
 
 $ tempo setup
 
