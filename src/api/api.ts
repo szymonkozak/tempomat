@@ -57,6 +57,14 @@ export type IssueEntity = {
     id: string;
 }
 
+type TempoApiErrorResponse = {
+    errors: Array<{ message: string }>;
+}
+
+type AtlassianApiErrorResponse = {
+    errorMessages: string[];
+}
+
 export default {
 
     async addWorklog(request: AddWorklogRequest): Promise<WorklogEntity> {
@@ -154,14 +162,14 @@ function handleError(e: AxiosError): never {
         throw Error(`Unauthorized access. Tokens are invalid or have expired. Run ${appName} setup to configure access.`)
     }
 
-    const errorMessages = e.response?.data?.errorMessages
+    const errorMessages = (e.response?.data as AtlassianApiErrorResponse)?.errorMessages
     if (Array.isArray(errorMessages)) {
         if (errorMessages) {
             throw Error(`Failure (Atlassian API). Reason: ${e.message}. Errors: ${errorMessages.join(', ')}`)
         }
     }
 
-    const errors = e.response?.data?.errors
+    const errors = (e.response?.data as TempoApiErrorResponse)?.errors
     if (Array.isArray(errors)) {
         const errorMessages = errors.map((err: { message?: string }) => err.message)
         if (errorMessages) {

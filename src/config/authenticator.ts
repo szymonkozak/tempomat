@@ -35,7 +35,7 @@ export default {
         try {
             const config = await configStore.read()
             return config.tempoToken !== undefined
-        } catch (e) {
+        } catch {
             return false
         }
     },
@@ -44,7 +44,7 @@ export default {
         try {
             const config = await configStore.read()
             return config.atlassianToken !== undefined
-        } catch (e) {
+        } catch {
             return false
         }
     }

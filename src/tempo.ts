@@ -17,6 +17,7 @@ import trackers, {
 import { Tracker } from './config/trackerStore'
 import * as trackersTable from './trackers/trackersTable'
 import { lightFormat as fnsLightFormat, differenceInMinutes } from 'date-fns'
+import { Interval } from 'date-fns'
 
 export default {
 
@@ -42,7 +43,7 @@ export default {
             ${aliasesCommand}
             `))
         } catch (e) {
-            showError(e)
+            showError(e as Error)
         }
     },
 
@@ -87,8 +88,8 @@ export default {
 
     async listAliases() {
         const all = await aliases.all()
-        /* eslint-disable no-unused-expressions */
-        all?.forEach((value, key, _) => {
+         
+        all?.forEach((value, key) => {
             console.log(`${key} => ${value}`)
         })
     },
@@ -198,7 +199,7 @@ async function execute(action: () => Promise<void>): Promise<boolean> {
         await action()
         return true
     } catch (e) {
-        showError(e)
+        showError(e as Error)
         return false
     }
 }

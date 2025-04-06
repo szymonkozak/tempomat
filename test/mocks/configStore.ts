@@ -14,6 +14,6 @@ export default {
     },
 
     async read(): Promise<Config> {
-        return new Promise((resolve, reject) => resolve(savedConfig))
+        return new Promise((resolve) => resolve(savedConfig))
     }
 }

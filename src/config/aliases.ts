@@ -22,14 +22,14 @@ export default {
         if (!config.aliases) {
             config.aliases = new Map<string, string>()
         }
-        /* eslint-disable no-unused-expressions */
+         
         config.aliases.set(aliasName, issueKey)
         await configStore.save(config)
     },
 
     async delete(aliasName: string) {
         const config = await configStore.read()
-        /* eslint-disable no-unused-expressions */
+         
         config.aliases?.delete(aliasName)
         await configStore.save(config)
     },

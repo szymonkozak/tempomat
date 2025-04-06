@@ -15,7 +15,7 @@ test('deletes a worklog', async () => {
     const getIssueKeyMock = jest.fn((issueId) => Promise.resolve(`ABC-${issueId}`))
     api.getIssueKey = getIssueKeyMock
 
-    const getWorklogMock = jest.fn((args) => {
+    const getWorklogMock = jest.fn(() => {
         return Promise.resolve({
             tempoWorklogId: '123',
             issue: {

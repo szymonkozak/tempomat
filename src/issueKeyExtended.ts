@@ -3,7 +3,9 @@ import cliTruncate from 'cli-truncate'
 import chalk from 'chalk'
 
 export enum AliasesPosition {
+    // eslint-disable-next-line no-unused-vars
     Left,
+    // eslint-disable-next-line no-unused-vars
     Right
 }
 

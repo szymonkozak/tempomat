@@ -20,7 +20,7 @@
     "tempo": "./bin/run"
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=20.9.0"
   },
   "keywords": [
     "tempo",
@@ -64,7 +64,7 @@
     "@oclif/plugin-warn-if-update-available": "^1.7.3",
     "@types/lodash": "^4.17.16",
     "@types/node": "^13.13.52",
-    "axios": "^0.21.4",
+    "axios": "^1.8.4",
     "chalk": "^3.0.0",
     "cli-table3": "^0.5.1",
     "cli-truncate": "^2.1.0",
@@ -74,19 +74,17 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.24.0",
     "@oclif/dev-cli": "^1.26.10",
     "@types/jest": "^25.2.3",
-    "@typescript-eslint/eslint-plugin": "^2.34.0",
-    "@typescript-eslint/parser": "^2.34.0",
-    "eslint": "^6.8.0",
-    "eslint-config-standard": "^14.1.1",
-    "eslint-plugin-import": "^2.31.0",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^4.3.1",
-    "eslint-plugin-standard": "^4.1.0",
-    "jest": "^25.5.4",
-    "ts-jest": "^25.5.1",
-    "ts-node": "^8.10.2",
-    "typescript": "^3.9.10"
+    "@typescript-eslint/eslint-plugin": "^8.29.0",
+    "@typescript-eslint/parser": "^8.29.0",
+    "eslint": "^9.24.0",
+    "globals": "^16.0.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.3.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   }
 }

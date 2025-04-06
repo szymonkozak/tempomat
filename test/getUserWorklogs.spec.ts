@@ -2,7 +2,7 @@
 // Only for test purpose, isn't compiled to js sources
 import { mockCurrentDate } from './mocks/currentDate'
 
-import api, { GetWorklogsRequest, GetWorklogsResponse, GetUserScheduleRequest, GetUserScheduleResponse } from '../src/api/api'
+import api, { GetWorklogsResponse, GetUserScheduleResponse } from '../src/api/api'
 import worklogs from '../src/worklogs/worklogs'
 import { fakeCredentials } from './mocks/fakeCredentials'
 
@@ -465,7 +465,7 @@ describe('get user worklogs', () => {
 })
 
 function mockWorklogsResponse (response: GetWorklogsResponse) {
-    const getWorklogsMock = jest.fn(async (request: GetWorklogsRequest) => {
+    const getWorklogsMock = jest.fn(async () => {
         return Promise.resolve<GetWorklogsResponse>(response)
     })
 
@@ -473,7 +473,7 @@ function mockWorklogsResponse (response: GetWorklogsResponse) {
 }
 
 function mockUserScheduleResponse (response: GetUserScheduleResponse) {
-    const getUserScheduleMock = jest.fn(async (request: GetUserScheduleRequest) => {
+    const getUserScheduleMock = jest.fn(async () => {
         return Promise.resolve<GetUserScheduleResponse>(response)
     })
 

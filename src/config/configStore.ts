@@ -34,7 +34,7 @@ export default {
             const configPath = configFilePath()
             const configJson = await readFileAsync(configPath, { encoding: 'utf8' })
             return JSON.parse(configJson, reviver)
-        } catch (e) {
+        } catch {
             return {
                 tempoToken: undefined,
                 accountId: undefined,

@@ -3,7 +3,7 @@ import { lightFormat as fnsLightFormat, differenceInMinutes } from 'date-fns'
 import chalk from 'chalk'
 import { Tracker } from '../config/trackerStore'
 import issueKeyExtended, { AliasesPosition } from '../issueKeyExtended'
-
+import { Interval } from 'date-fns'
 export async function render(tracker: Tracker, now: Date): Promise<HorizontalTable> {
     const table = new Table() as HorizontalTable
     const infoHeaders = await generateInfoHeaders(tracker)
