@@ -1,10 +1,11 @@
-import { Command, flags } from '@oclif/command'
+import { Command, Flags, Args } from '@oclif/core'
 import { appName } from '../../appName'
 import tempo from '../../tempo'
 import globalFlags from '../../globalFlags'
 import time from '../../time'
 
 export default class Start extends Command {
+    static id = 'tracker:start'
     static description = '[or start], start a new tracker'
 
     static examples = [
@@ -16,22 +17,21 @@ export default class Start extends Command {
     static aliases = ['start']
 
     static flags = {
-        help: flags.help({ char: 'h' }),
-        debug: flags.boolean(),
-        description: flags.string({ char: 'd', description: 'description for worklog once tracker is stopped' }),
-        'stop-previous': flags.boolean({ description: 'stops and logs previous tracker with the same issue key if it exists' })
+        help: Flags.help({ char: 'h' }),
+        debug: Flags.boolean(),
+        description: Flags.string({ char: 'd', description: 'description for worklog once tracker is stopped' }),
+        'stop-previous': Flags.boolean({ description: 'stops and logs previous tracker with the same issue key if it exists' })
     }
 
-    static args = [
-        {
-            name: 'issue_key_or_alias',
-            description: 'issue key, like abc-123 or alias',
+    static args = {
+        issue_key_or_alias: Args.string({
+            description: 'issue key or alias',
             required: true
-        }
-    ]
+        })
+    }
 
     async run() {
-        const { args, flags } = this.parse(Start)
+        const { args, flags } = await this.parse(Start)
         globalFlags.debug = flags.debug
         await tempo.startTracker({
             issueKeyOrAlias: args.issue_key_or_alias,

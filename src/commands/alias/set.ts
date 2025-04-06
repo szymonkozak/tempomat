@@ -1,4 +1,4 @@
-import { Command, flags } from '@oclif/command'
+import { Command, Flags, Args } from '@oclif/core'
 import { appName } from '../../appName'
 import tempo from '../../tempo'
 import globalFlags from '../../globalFlags'
@@ -11,25 +11,24 @@ export default class Set extends Command {
     ]
 
     static flags = {
-        help: flags.help({ char: 'h' }),
-        debug: flags.boolean()
+        help: Flags.help({ char: 'h' }),
+        debug: Flags.boolean()
     }
 
-    static args = [
-        {
-            name: 'alias_name',
+    static args = {
+        alias: Args.string({
+            description: 'alias name',
             required: true
-        },
-        {
-            name: 'issue_key',
-            description: 'issue key, like abc-123',
+        }),
+        issue_key: Args.string({
+            description: 'issue key',
             required: true
-        }
-    ]
+        })
+    }
 
     async run() {
-        const { args, flags } = this.parse(Set)
+        const { args, flags } = await this.parse(Set)
         globalFlags.debug = flags.debug
-        tempo.setAlias(args.alias_name, args.issue_key)
+        await tempo.setAlias(args.alias, args.issue_key)
     }
 }

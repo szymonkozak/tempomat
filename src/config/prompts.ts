@@ -13,7 +13,6 @@ export default {
         const profileInfo = await promptProfileInfo()
         const atlassianUserEmail = await promptAtlassianUserEmail()
         const atlassianToken = await promptAtlassianToken()
-
         if (!atlassianToken) throw Error('Failure. Atlassian token wasn\'t set properly.')
 
         const tempoToken = await promptTempoToken(profileInfo.hostname)

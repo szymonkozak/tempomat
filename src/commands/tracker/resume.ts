@@ -1,34 +1,31 @@
-import { Command, flags } from '@oclif/command'
+import { Command, Flags, Args } from '@oclif/core'
 import { appName } from '../../appName'
 import tempo from '../../tempo'
 import globalFlags from '../../globalFlags'
 import time from '../../time'
 
 export default class Resume extends Command {
-    static description = '[or resume], resume a tracker that is currently paused'
+    static description = 'resume tracking time'
 
     static examples = [
         `${appName} tracker:resume abc-123`,
         `${appName} resume abc-123`
     ]
 
-    static aliases = ['resume']
-
     static flags = {
-        help: flags.help({ char: 'h' }),
-        debug: flags.boolean()
+        help: Flags.help({ char: 'h' }),
+        debug: Flags.boolean()
     }
 
-    static args = [
-        {
-            name: 'issue_key_or_alias',
-            description: 'issue key, like abc-123 or alias',
+    static args = {
+        issue_key_or_alias: Args.string({
+            description: 'issue key or alias',
             required: true
-        }
-    ]
+        })
+    }
 
     async run() {
-        const { args, flags } = this.parse(Resume)
+        const { args, flags } = await this.parse(Resume)
         globalFlags.debug = flags.debug
         await tempo.resumeTracker({
             issueKeyOrAlias: args.issue_key_or_alias,

@@ -36,7 +36,7 @@
         "description": "manage issue key aliases"
       },
       "tracker": {
-        "description": "manage issue time trackers (beta)"
+        "description": "manage issue time trackers"
       }
     },
     "commands": "./dist/commands",
@@ -48,6 +48,9 @@
     ],
     "warn-if-update-available": {
       "timeoutInDays": 7
+    },
+    "helpOptions": {
+      "hideAliasesFromRoot": true
     }
   },
   "files": [
@@ -57,27 +60,25 @@
     "/oclif.manifest.json"
   ],
   "dependencies": {
-    "@oclif/command": "^1.8.36",
-    "@oclif/config": "^1.18.17",
-    "@oclif/plugin-autocomplete": "^0.1.5",
-    "@oclif/plugin-help": "^2.2.3",
-    "@oclif/plugin-warn-if-update-available": "^1.7.3",
+    "@oclif/core": "^4.2.10",
+    "@oclif/plugin-autocomplete": "^1.4.3",
+    "@oclif/plugin-help": "^6.2.27",
+    "@oclif/plugin-warn-if-update-available": "^3.1.38",
     "@types/lodash": "^4.17.16",
-    "@types/node": "^13.13.52",
     "axios": "^1.8.4",
     "chalk": "^3.0.0",
     "cli-table3": "^0.5.1",
     "cli-truncate": "^2.1.0",
-    "cli-ux": "^5.4.5",
+    "cli-ux": "^6.0.9",
     "date-fns": "^2.30.0",
-    "globby": "^10.0.2",
+    "globby": "^14.1.0",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.24.0",
-    "@oclif/dev-cli": "^1.26.10",
     "@types/jest": "^25.2.3",
+    "@types/node": "^22.14.0",
     "@typescript-eslint/eslint-plugin": "^8.29.0",
     "@typescript-eslint/parser": "^8.29.0",
     "eslint": "^9.24.0",
