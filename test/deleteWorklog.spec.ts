@@ -1,26 +1,26 @@
 import api from '../src/api/api'
 import worklogs from '../src/worklogs/worklogs'
-import authenticator from '../src/config/authenticator'
+import { fakeCredentials } from './mocks/fakeCredentials'
 
 jest.mock('../src/config/configStore', () => jest.requireActual('./mocks/configStore'))
 
 afterEach(() => { jest.clearAllMocks() })
 
-authenticator.saveCredentials({
-    accountId: 'fakeAccountId',
-    tempoToken: 'fakeToken'
-})
+fakeCredentials()
 
 test('deletes a worklog', async () => {
     const deleteWorklogMock = jest.fn()
     api.deleteWorklog = deleteWorklogMock
 
+    const getIssueKeyMock = jest.fn((issueId) => Promise.resolve(`ABC-${issueId}`))
+    api.getIssueKey = getIssueKeyMock
+
     const getWorklogMock = jest.fn((args) => {
         return Promise.resolve({
             tempoWorklogId: '123',
             issue: {
-                self: 'https://example.atlassian.net/rest/api/2/issue/ABC-123',
-                key: 'ABC-123'
+                self: 'https://example.atlassian.net/rest/api/2/issue/123',
+                id: '123'
             },
             timeSpentSeconds: 900,
             startDate: '2020-02-28',
@@ -44,6 +44,7 @@ test('deletes a worklog', async () => {
             startTime: '09:30',
             endTime: '09:45'
         },
+        issueId: '123',
         issueKey: 'ABC-123',
         link: 'https://example.atlassian.net/browse/ABC-123'
     })

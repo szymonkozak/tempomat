@@ -1,10 +1,10 @@
 import api from '../src/api/api'
-import authenticator from '../src/config/authenticator'
 import aliases from '../src/config/aliases'
 import tempo from '../src/tempo'
 import configStore from '../src/config/configStore'
 import { Tracker } from '../src/config/trackerStore'
 import { add } from 'date-fns'
+import { fakeCredentials } from './mocks/fakeCredentials'
 
 jest.mock('../src/config/configStore', () => jest.requireActual('./mocks/configStore'))
 
@@ -20,14 +20,11 @@ async function clearStore() {
 }
 
 function authenticate() {
-    authenticator.saveCredentials({
-        accountId: 'fakeAccountId',
-        tempoToken: 'fakeToken'
-    })
+    fakeCredentials()
 }
 
 function mockWorklogResponse(
-    returnValue: any = { issue: { key: 'ABC-123', self: 'https://example.atlassian.net/rest/api/2/issue/ABC-123' } }
+    returnValue: any = { issue: { id: '123', self: 'https://example.atlassian.net/rest/api/2/issue/123' } }
 ): jest.Mock<any, any> {
     const addWorklogMock = jest.fn().mockReturnValue(returnValue)
     api.addWorklog = addWorklogMock
@@ -45,6 +42,9 @@ function mockWorklogFailure(
 const baseDate = new Date('2020-02-28T12:00:00.000+01:00')
 
 describe('tracker', () => {
+    const getIssueIdMock = jest.fn((issueKey) => Promise.resolve(issueKey.split('-')[1]))
+    api.getIssueId = getIssueIdMock
+
     test('can be started for an issue', async () => {
         await clearStore()
 
@@ -136,7 +136,7 @@ describe('tracker', () => {
         })
 
         expect(apiMock).toBeCalledWith({
-            issueKey: 'ABC-123',
+            issueId: '123',
             description: 'start description',
             timeSpentSeconds: 600,
             startDate: '2020-02-28',
@@ -200,7 +200,7 @@ describe('tracker', () => {
         })
 
         expect(apiMock).toBeCalledWith({
-            issueKey: 'ABC-123',
+            issueId: '123',
             timeSpentSeconds: 600,
             startDate: '2020-02-28',
             startTime: '12:00:00'
@@ -231,14 +231,14 @@ describe('tracker', () => {
         })
 
         expect(apiMock).toBeCalledWith({
-            issueKey: 'ABC-123',
+            issueId: '123',
             timeSpentSeconds: 600,
             startDate: '2020-02-28',
             startTime: '12:00:00',
             remainingEstimateSeconds: 3600
         })
         expect(apiMock).toBeCalledWith({
-            issueKey: 'ABC-123',
+            issueId: '123',
             timeSpentSeconds: 600,
             startDate: '2020-02-28',
             startTime: '12:20:00',
@@ -285,13 +285,13 @@ describe('tracker', () => {
         })
 
         expect(apiMock).toBeCalledWith({
-            issueKey: 'ABC-123',
+            issueId: '123',
             timeSpentSeconds: 600,
             startDate: '2020-02-28',
             startTime: '12:00:00'
         })
         expect(apiMock).toBeCalledWith({
-            issueKey: 'ABC-123',
+            issueId: '123',
             timeSpentSeconds: 600,
             startDate: '2020-02-28',
             startTime: '12:20:00'
@@ -317,7 +317,7 @@ describe('tracker', () => {
         })
 
         expect(apiMock).toBeCalledWith({
-            issueKey: 'ABC-123',
+            issueId: '123',
             timeSpentSeconds: 600,
             startDate: '2020-02-28',
             startTime: '12:00:00'
@@ -356,13 +356,13 @@ describe('tracker', () => {
         })
 
         expect(apiMock).toBeCalledWith({
-            issueKey: 'ABC-123',
+            issueId: '123',
             timeSpentSeconds: 120,
             startDate: '2020-02-28',
             startTime: '12:00:00'
         })
         expect(apiMock).toBeCalledWith({
-            issueKey: 'ABC-123',
+            issueId: '123',
             timeSpentSeconds: 120,
             startDate: '2020-02-28',
             startTime: '12:20:00'
@@ -388,7 +388,7 @@ describe('tracker', () => {
         })
 
         expect(apiMock).toBeCalledWith({
-            issueKey: 'ABC-123',
+            issueId: '123',
             timeSpentSeconds: 1200,
             startDate: '2020-02-28',
             startTime: '12:00:00'
@@ -427,13 +427,13 @@ describe('tracker', () => {
         })
 
         expect(apiMock).toBeCalledWith({
-            issueKey: 'ABC-123',
+            issueId: '123',
             timeSpentSeconds: 1200,
             startDate: '2020-02-28',
             startTime: '12:00:00'
         })
         expect(apiMock).toBeCalledWith({
-            issueKey: 'ABC-123',
+            issueId: '123',
             timeSpentSeconds: 1080,
             startDate: '2020-02-28',
             startTime: '12:22:00'
@@ -483,7 +483,7 @@ describe('tracker', () => {
         })
 
         expect(apiMock).toBeCalledWith({
-            issueKey: 'ABC-123',
+            issueId: '123',
             description: 'stop description',
             timeSpentSeconds: 600,
             startDate: '2020-02-28',
@@ -495,10 +495,10 @@ describe('tracker', () => {
         await clearStore()
         authenticate()
         api.addWorklog = jest.fn()
-            .mockReturnValueOnce({ issue: { key: 'ABC-123', self: 'https://example.atlassian.net/rest/api/2/issue/ABC-123' } })
+            .mockReturnValueOnce({ issue: { id: '123', self: 'https://example.atlassian.net/rest/api/2/issue/123' } })
             .mockRejectedValueOnce(new Error('Failed to upload worklog!'))
             .mockRejectedValueOnce(new Error('Failed to upload worklog!'))
-            .mockReturnValueOnce({ issue: { key: 'ABC-123', self: 'https://example.atlassian.net/rest/api/2/issue/ABC-123' } })
+            .mockReturnValueOnce({ issue: { id: '123', self: 'https://example.atlassian.net/rest/api/2/issue/123' } })
 
         await tempo.startTracker({
             issueKeyOrAlias: 'ABC-123',
@@ -607,7 +607,7 @@ describe('tracker', () => {
         })
 
         expect(apiMock).toBeCalledWith({
-            issueKey: 'ABC-123',
+            issueId: '123',
             timeSpentSeconds: 1800,
             startDate: '2020-02-28',
             startTime: '12:00:00',

@@ -3,9 +3,10 @@ import { AxiosError, AxiosResponse } from 'axios'
 import tempoAxios from './tempoAxios'
 import flags from '../globalFlags'
 import { appName } from '../appName'
+import atlassianAxios from './atlassianAxios'
 
 export type AddWorklogRequest = {
-    issueKey: string;
+    issueId: string;
     timeSpentSeconds: number;
     startDate: string;
     startTime: string;
@@ -53,7 +54,7 @@ export type AuthorEntity = {
 
 export type IssueEntity = {
     self: string;
-    key: string;
+    id: string;
 }
 
 export default {
@@ -105,6 +106,22 @@ export default {
                 results: response.data.results
             }
         })
+    },
+
+    async getIssueId(issueKey: string): Promise<string> {
+        return execute(async () => {
+            const response = await atlassianAxios.get(`/issue/${issueKey}`)
+            debugLog(response)
+            return response.data.id
+        })
+    },
+
+    async getIssueKey(issueId: string): Promise<string> {
+        return execute(async () => {
+            const response = await atlassianAxios.get(`/issue/${issueId}`)
+            debugLog(response)
+            return response.data.key
+        })
     }
 }
 
@@ -134,15 +151,32 @@ function handleError(e: AxiosError): never {
     if (flags.debug) console.log(`Response: ${JSON.stringify(e.response?.data)}`)
     const responseStatus = e.response?.status
     if (responseStatus === 401) {
-        throw Error(`Unauthorized access. Token is invalid or has expired. Run ${appName} setup to configure access.`)
+        throw Error(`Unauthorized access. Tokens are invalid or have expired. Run ${appName} setup to configure access.`)
     }
-    const errorMessages = e.response?.data?.errors?.map((err: { message?: string }) => err.message)
-    if (errorMessages) {
-        throw Error(`Failure. Reason: ${e.message}. Errors: ${errorMessages.join(', ')}`)
-    } else {
-        if (flags.debug) console.log(e.toJSON())
-        let errorMessage = 'Error connecting to server.'
-        if (responseStatus) errorMessage += ` Server status code: ${responseStatus}.`
-        throw Error(errorMessage)
+
+    const errorMessages = e.response?.data?.errorMessages
+    if (Array.isArray(errorMessages)) {
+        if (errorMessages) {
+            throw Error(`Failure (Atlassian API). Reason: ${e.message}. Errors: ${errorMessages.join(', ')}`)
+        }
     }
+
+    const errors = e.response?.data?.errors
+    if (Array.isArray(errors)) {
+        const errorMessages = errors.map((err: { message?: string }) => err.message)
+        if (errorMessages) {
+            throw Error(`Failure (Tempo API). Reason: ${e.message}. Errors: ${errorMessages.join(', ')}`)
+        }
+    }
+
+    if (flags.debug) {
+        if (e.response) {
+            console.log(e.toJSON())
+        } else {
+            console.log(e)
+        }
+    }
+    let errorMessage = 'Error connecting to server.'
+    if (responseStatus) errorMessage += ` Server status code: ${responseStatus}.`
+    throw Error(errorMessage)
 }

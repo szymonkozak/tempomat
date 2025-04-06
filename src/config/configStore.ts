@@ -10,6 +10,9 @@ const writeFileAsync = promisify(fs.writeFile)
 export type Config = {
     tempoToken?: string
     accountId?: string
+    atlassianUserEmail?: string
+    atlassianToken?: string
+    hostname?: string
     aliases?: Map<string, string>
     trackers?: Map<string, Tracker>
 }
@@ -35,6 +38,9 @@ export default {
             return {
                 tempoToken: undefined,
                 accountId: undefined,
+                atlassianUserEmail: undefined,
+                atlassianToken: undefined,
+                hostname: undefined,
                 aliases: undefined,
                 trackers: undefined
             }

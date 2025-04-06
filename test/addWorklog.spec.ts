@@ -4,22 +4,23 @@ import { mockCurrentDate } from './mocks/currentDate'
 
 import api from '../src/api/api'
 import worklogs from '../src/worklogs/worklogs'
-import authenticator from '../src/config/authenticator'
 import aliases from '../src/config/aliases'
+import { fakeCredentials } from './mocks/fakeCredentials'
 
 jest.mock('../src/config/configStore', () => jest.requireActual('./mocks/configStore'))
 
 afterEach(() => { jest.clearAllMocks() })
 
-authenticator.saveCredentials({
-    accountId: 'fakeAccountId',
-    tempoToken: 'fakeToken'
-})
+fakeCredentials()
 
 describe('adds a worklog', () => {
     const addWorklogMock = jest.fn()
-        .mockReturnValue({ issue: { key: 'ABC-123', self: 'https://example.atlassian.net/rest/api/2/issue/ABC-123' } })
+        .mockReturnValue({ issue: { id: '123', self: 'https://example.atlassian.net/rest/api/2/issue/123' } })
     api.addWorklog = addWorklogMock
+
+    const getIssueIdMock = jest.fn((issueKey) => Promise.resolve(issueKey.split('-')[1]))
+    api.getIssueId = getIssueIdMock
+
     api.getUserSchedule = jest.fn()
 
     mockCurrentDate(new Date('2020-02-28T12:00:00.000+01:00'))
@@ -33,7 +34,7 @@ describe('adds a worklog', () => {
             })
 
             expect(addWorklogMock).toHaveBeenCalledWith({
-                issueKey: 'ABC-123',
+                issueId: '123',
                 timeSpentSeconds: 4200,
                 startDate: '2020-02-28',
                 startTime: '12:00:00'
@@ -49,7 +50,7 @@ describe('adds a worklog', () => {
             })
 
             expect(addWorklogMock).toHaveBeenCalledWith({
-                issueKey: 'ABC-123',
+                issueId: '123',
                 timeSpentSeconds: 4200,
                 startDate: '2020-02-28',
                 startTime: '09:30:00'
@@ -65,7 +66,7 @@ describe('adds a worklog', () => {
             })
 
             expect(addWorklogMock).toHaveBeenCalledWith({
-                issueKey: 'ABC-123',
+                issueId: '123',
                 timeSpentSeconds: 1200,
                 startDate: '2020-02-27',
                 startTime: '09:00:00'
@@ -81,7 +82,7 @@ describe('adds a worklog', () => {
             })
 
             expect(addWorklogMock).toHaveBeenCalledWith({
-                issueKey: 'ABC-123',
+                issueId: '123',
                 timeSpentSeconds: 19200,
                 startDate: '2020-02-27',
                 startTime: '03:00:00'
@@ -96,7 +97,7 @@ describe('adds a worklog', () => {
             })
 
             expect(addWorklogMock).toHaveBeenCalledWith({
-                issueKey: 'ABC-123',
+                issueId: '123',
                 timeSpentSeconds: 4200,
                 startDate: '2020-03-08',
                 startTime: '00:00:00'
@@ -111,7 +112,7 @@ describe('adds a worklog', () => {
             })
 
             expect(addWorklogMock).toHaveBeenCalledWith({
-                issueKey: 'ABC-123',
+                issueId: '123',
                 timeSpentSeconds: 7200,
                 startDate: '2020-02-27',
                 startTime: '00:00:00'
@@ -126,7 +127,7 @@ describe('adds a worklog', () => {
             })
 
             expect(addWorklogMock).toHaveBeenCalledWith({
-                issueKey: 'ABC-123',
+                issueId: '123',
                 timeSpentSeconds: 7200,
                 startDate: '2020-02-27',
                 startTime: '00:00:00'
@@ -141,7 +142,7 @@ describe('adds a worklog', () => {
             })
 
             expect(addWorklogMock).toHaveBeenCalledWith({
-                issueKey: 'ABC-123',
+                issueId: '123',
                 timeSpentSeconds: 6000,
                 startDate: '2020-02-28',
                 startTime: '00:00:00'
@@ -156,7 +157,7 @@ describe('adds a worklog', () => {
             })
 
             expect(addWorklogMock).toHaveBeenCalledWith({
-                issueKey: 'ABC-123',
+                issueId: '123',
                 timeSpentSeconds: 6000,
                 startDate: '2020-02-28',
                 startTime: '00:00:00'
@@ -171,7 +172,7 @@ describe('adds a worklog', () => {
             })
 
             expect(addWorklogMock).toHaveBeenCalledWith({
-                issueKey: 'ABC-123',
+                issueId: '123',
                 timeSpentSeconds: 6300,
                 startDate: '2020-02-28',
                 startTime: '00:00:00'
@@ -186,7 +187,7 @@ describe('adds a worklog', () => {
             })
 
             expect(addWorklogMock).toHaveBeenCalledWith({
-                issueKey: 'ABC-123',
+                issueId: '123',
                 timeSpentSeconds: 6300,
                 startDate: '2020-02-28',
                 startTime: '00:00:00'
@@ -201,7 +202,7 @@ describe('adds a worklog', () => {
             })
 
             expect(addWorklogMock).toHaveBeenCalledWith({
-                issueKey: 'ABC-123',
+                issueId: '123',
                 timeSpentSeconds: 18000,
                 startDate: '2020-03-09',
                 startTime: '00:00:00'
@@ -216,7 +217,7 @@ describe('adds a worklog', () => {
             })
 
             expect(addWorklogMock).toHaveBeenCalledWith({
-                issueKey: 'ABC-123',
+                issueId: '123',
                 timeSpentSeconds: 18000,
                 startDate: '2020-03-09',
                 startTime: '00:00:00'
@@ -231,7 +232,7 @@ describe('adds a worklog', () => {
             })
 
             expect(addWorklogMock).toHaveBeenCalledWith({
-                issueKey: 'ABC-123',
+                issueId: '123',
                 timeSpentSeconds: 1800,
                 startDate: '2020-02-23',
                 startTime: '00:00:00'
@@ -246,7 +247,7 @@ describe('adds a worklog', () => {
             })
 
             expect(addWorklogMock).toHaveBeenCalledWith({
-                issueKey: 'ABC-123',
+                issueId: '123',
                 timeSpentSeconds: 1800,
                 startDate: '2020-02-23',
                 startTime: '00:00:00'
@@ -263,7 +264,7 @@ describe('adds a worklog', () => {
             })
 
             expect(addWorklogMock).toHaveBeenCalledWith({
-                issueKey: 'ABC-123',
+                issueId: '123',
                 timeSpentSeconds: 5400,
                 startDate: '2020-02-28',
                 startTime: '11:30:00'
@@ -278,7 +279,7 @@ describe('adds a worklog', () => {
             })
 
             expect(addWorklogMock).toHaveBeenCalledWith({
-                issueKey: 'ABC-123',
+                issueId: '123',
                 timeSpentSeconds: 3600,
                 startDate: '2020-02-27',
                 startTime: '23:30:00'
@@ -293,7 +294,7 @@ describe('adds a worklog', () => {
             })
 
             expect(addWorklogMock).toHaveBeenCalledWith({
-                issueKey: 'ABC-123',
+                issueId: '123',
                 timeSpentSeconds: 18000,
                 startDate: '2020-02-27',
                 startTime: '00:00:00'
@@ -308,7 +309,7 @@ describe('adds a worklog', () => {
             })
 
             expect(addWorklogMock).toHaveBeenCalledWith({
-                issueKey: 'ABC-123',
+                issueId: '123',
                 timeSpentSeconds: 7200,
                 startDate: '2020-03-08',
                 startTime: '11:00:00'
@@ -322,7 +323,7 @@ describe('adds a worklog', () => {
             })
 
             expect(addWorklogMock).toHaveBeenCalledWith({
-                issueKey: 'ABC-123',
+                issueId: '123',
                 timeSpentSeconds: 86400,
                 startDate: '2020-02-28',
                 startTime: '12:00:00'
@@ -338,7 +339,7 @@ describe('adds a worklog', () => {
         })
 
         expect(addWorklogMock).toHaveBeenCalledWith({
-            issueKey: 'ABC-123',
+            issueId: '123',
             timeSpentSeconds: 3600,
             startDate: '2020-02-28',
             startTime: '12:00:00',
@@ -356,7 +357,7 @@ describe('adds a worklog', () => {
         })
 
         expect(addWorklogMock).toHaveBeenCalledWith({
-            issueKey: 'ABC-123',
+            issueId: '123',
             timeSpentSeconds: 3600,
             startDate: '2020-02-28',
             startTime: '12:00:00',
@@ -372,7 +373,7 @@ describe('adds a worklog', () => {
         })
 
         expect(addWorklogMock).toHaveBeenCalledWith({
-            issueKey: 'ABC-123',
+            issueId: '123',
             timeSpentSeconds: 3600,
             startDate: '2020-02-28',
             startTime: '12:00:00',
@@ -388,7 +389,7 @@ describe('adds a worklog', () => {
         })
 
         expect(addWorklogMock).toHaveBeenCalledWith({
-            issueKey: 'ABC-123',
+            issueId: '123',
             timeSpentSeconds: 3600,
             startDate: '2020-02-28',
             startTime: '12:00:00',
@@ -465,3 +466,4 @@ describe('fails when', () => {
         )
     })
 })
+

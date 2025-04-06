@@ -7,7 +7,10 @@ jest.mock('../src/config/configStore', () => jest.requireActual('./mocks/configS
 test('add and remove alias', async () => {
     authenticator.saveCredentials({
         accountId: 'fakeAccountId',
-        tempoToken: 'fakeToken'
+        tempoToken: 'fakeToken',
+        atlassianUserEmail: 'fakeUserEmail',
+        atlassianToken: 'fakeToken',
+        hostname: 'fakeHostname'
     })
 
     await aliases.set('lunch', 'ABC-123')
@@ -17,6 +20,9 @@ test('add and remove alias', async () => {
         {
             accountId: 'fakeAccountId',
             tempoToken: 'fakeToken',
+            atlassianUserEmail: 'fakeUserEmail',
+            atlassianToken: 'fakeToken',
+            hostname: 'fakeHostname',
             aliases: new Map<string, string>([
                 ['lunch', 'ABC-123'],
                 ['foo', 'ABC-321']
@@ -31,6 +37,9 @@ test('add and remove alias', async () => {
         {
             accountId: 'fakeAccountId',
             tempoToken: 'fakeToken',
+            atlassianUserEmail: 'fakeUserEmail',
+            atlassianToken: 'fakeToken',
+            hostname: 'fakeHostname',
             aliases: new Map<string, string>([
                 ['lunch', 'ABC-123']
             ]),
