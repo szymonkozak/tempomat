@@ -1,4 +1,5 @@
 import configStore from './configStore'
+import { Interval } from 'date-fns'
 
 export type Tracker = {
     issueKey: string

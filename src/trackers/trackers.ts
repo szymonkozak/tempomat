@@ -1,5 +1,6 @@
 import aliases from '../config/aliases'
 import trackerStore, { Tracker } from '../config/trackerStore'
+import { Interval } from 'date-fns'
 
 export type StartTrackerInput = {
     issueKeyOrAlias: string,

@@ -10,6 +10,9 @@ const writeFileAsync = promisify(fs.writeFile)
 export type Config = {
     tempoToken?: string
     accountId?: string
+    atlassianUserEmail?: string
+    atlassianToken?: string
+    hostname?: string
     aliases?: Map<string, string>
     trackers?: Map<string, Tracker>
 }
@@ -31,10 +34,13 @@ export default {
             const configPath = configFilePath()
             const configJson = await readFileAsync(configPath, { encoding: 'utf8' })
             return JSON.parse(configJson, reviver)
-        } catch (e) {
+        } catch {
             return {
                 tempoToken: undefined,
                 accountId: undefined,
+                atlassianUserEmail: undefined,
+                atlassianToken: undefined,
+                hostname: undefined,
                 aliases: undefined,
                 trackers: undefined
             }

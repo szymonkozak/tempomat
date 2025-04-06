@@ -2,20 +2,23 @@
 // Only for test purpose, isn't compiled to js sources
 import { mockCurrentDate } from './mocks/currentDate'
 
-import api, { GetWorklogsRequest, GetWorklogsResponse, GetUserScheduleRequest, GetUserScheduleResponse } from '../src/api/api'
+import api, { GetWorklogsResponse, GetUserScheduleResponse } from '../src/api/api'
 import worklogs from '../src/worklogs/worklogs'
-import authenticator from '../src/config/authenticator'
+import { fakeCredentials } from './mocks/fakeCredentials'
 
 jest.mock('../src/config/configStore', () => jest.requireActual('./mocks/configStore'))
 
 afterEach(() => { jest.clearAllMocks() })
 
-authenticator.saveCredentials({
-    accountId: 'fakeAccountId',
-    tempoToken: 'fakeToken'
-})
+fakeCredentials()
 
 describe('get user worklogs', () => {
+    const getIssueKeyMock = jest.fn((issueId) => Promise.resolve(`ABC-${issueId}`))
+    api.getIssueKey = getIssueKeyMock
+
+    const getIssueIdMock = jest.fn((issueKey) => Promise.resolve(issueKey.split('-')[1]))
+    api.getIssueId = getIssueIdMock
+
     mockUserScheduleResponse({
         results: [
             {
@@ -171,8 +174,8 @@ describe('get user worklogs', () => {
             {
                 tempoWorklogId: '123',
                 issue: {
-                    self: 'https://example.atlassian.net/rest/api/2/issue/ABC-123',
-                    key: 'ABC-123'
+                    self: 'https://example.atlassian.net/rest/api/2/issue/123',
+                    id: '123'
                 },
                 timeSpentSeconds: 900,
                 startDate: '2020-02-28',
@@ -185,8 +188,8 @@ describe('get user worklogs', () => {
             {
                 tempoWorklogId: '123',
                 issue: {
-                    self: 'https://example.atlassian.net/rest/api/2/issue/ABC-123',
-                    key: 'ABC-123'
+                    self: 'https://example.atlassian.net/rest/api/2/issue/123',
+                    id: '123'
                 },
                 timeSpentSeconds: 900,
                 startDate: '2020-02-28',
@@ -199,8 +202,8 @@ describe('get user worklogs', () => {
             {
                 tempoWorklogId: '124',
                 issue: {
-                    self: 'https://example.atlassian.net/rest/api/2/issue/ABC-124',
-                    key: 'ABC-124'
+                    self: 'https://example.atlassian.net/rest/api/2/issue/124',
+                    id: '124'
                 },
                 timeSpentSeconds: 7200,
                 startDate: '2020-02-28',
@@ -213,8 +216,8 @@ describe('get user worklogs', () => {
             {
                 tempoWorklogId: '125',
                 issue: {
-                    self: 'https://example.atlassian.net/rest/api/2/issue/ABC-125',
-                    key: 'ABC-125'
+                    self: 'https://example.atlassian.net/rest/api/2/issue/125',
+                    id: '125'
                 },
                 timeSpentSeconds: 7380,
                 startDate: '2020-02-27',
@@ -241,6 +244,7 @@ describe('get user worklogs', () => {
                     endTime: '09:45'
                 },
                 issueKey: 'ABC-123',
+                issueId: '123',
                 link: 'https://example.atlassian.net/browse/ABC-123'
             },
             {
@@ -252,6 +256,7 @@ describe('get user worklogs', () => {
                     endTime: '14:00'
                 },
                 issueKey: 'ABC-124',
+                issueId: '124',
                 link: 'https://example.atlassian.net/browse/ABC-124'
             }
         ])
@@ -277,6 +282,7 @@ describe('get user worklogs', () => {
                     endTime: '02:03'
                 },
                 issueKey: 'ABC-125',
+                issueId: '125',
                 link: 'https://example.atlassian.net/browse/ABC-125'
             }
         ])
@@ -302,6 +308,7 @@ describe('get user worklogs', () => {
                     endTime: '02:03'
                 },
                 issueKey: 'ABC-125',
+                issueId: '125',
                 link: 'https://example.atlassian.net/browse/ABC-125'
             }
         ])
@@ -326,6 +333,7 @@ describe('get user worklogs', () => {
                 endTime: '02:03'
             },
             issueKey: 'ABC-125',
+            issueId: '125',
             link: 'https://example.atlassian.net/browse/ABC-125'
         }])
         expect(result.scheduleDetails).toStrictEqual({
@@ -385,8 +393,8 @@ describe('get user worklogs', () => {
                 {
                     tempoWorklogId: '123',
                     issue: {
-                        self: 'https://example.atlassian.net/rest/api/2/issue/ABC-123',
-                        key: 'ABC-123'
+                        self: 'https://example.atlassian.net/rest/api/2/issue/123',
+                        id: '123'
                     },
                     timeSpentSeconds: 21600,
                     startDate: '2020-02-03',
@@ -410,6 +418,7 @@ describe('get user worklogs', () => {
                 endTime: '15:30'
             },
             issueKey: 'ABC-123',
+            issueId: '123',
             link: 'https://example.atlassian.net/browse/ABC-123'
         }])
         expect(result.scheduleDetails).toStrictEqual({
@@ -428,8 +437,8 @@ describe('get user worklogs', () => {
                 {
                     tempoWorklogId: '123',
                     issue: {
-                        self: 'https://example.atlassian.net/rest/api/2/issue/ABC-123',
-                        key: 'ABC-123'
+                        self: 'https://example.atlassian.net/rest/api/2/issue/123',
+                        id: '123'
                     },
                     timeSpentSeconds: 21600,
                     startDate: '2020-02-03',
@@ -456,7 +465,7 @@ describe('get user worklogs', () => {
 })
 
 function mockWorklogsResponse (response: GetWorklogsResponse) {
-    const getWorklogsMock = jest.fn(async (request: GetWorklogsRequest) => {
+    const getWorklogsMock = jest.fn(async () => {
         return Promise.resolve<GetWorklogsResponse>(response)
     })
 
@@ -464,7 +473,7 @@ function mockWorklogsResponse (response: GetWorklogsResponse) {
 }
 
 function mockUserScheduleResponse (response: GetUserScheduleResponse) {
-    const getUserScheduleMock = jest.fn(async (request: GetUserScheduleRequest) => {
+    const getUserScheduleMock = jest.fn(async () => {
         return Promise.resolve<GetUserScheduleResponse>(response)
     })
 

@@ -1,4 +1,4 @@
-import { Command, flags } from '@oclif/command'
+import { Command, Flags, Args } from '@oclif/core'
 import { appName } from '../../appName'
 import tempo from '../../tempo'
 import globalFlags from '../../globalFlags'
@@ -15,20 +15,19 @@ export default class Pause extends Command {
     static aliases = ['pause']
 
     static flags = {
-        help: flags.help({ char: 'h' }),
-        debug: flags.boolean()
+        help: Flags.help({ char: 'h' }),
+        debug: Flags.boolean()
     }
 
-    static args = [
-        {
-            name: 'issue_key_or_alias',
-            description: 'issue key, like abc-123 or alias',
+    static args = {
+        issue_key_or_alias: Args.string({
+            description: 'issue key or alias',
             required: true
-        }
-    ]
+        })
+    }
 
     async run() {
-        const { args, flags } = this.parse(Pause)
+        const { args, flags } = await this.parse(Pause)
         globalFlags.debug = flags.debug
         await tempo.pauseTracker({
             issueKeyOrAlias: args.issue_key_or_alias,

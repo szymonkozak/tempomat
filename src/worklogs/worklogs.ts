@@ -1,4 +1,4 @@
-import api, { IssueEntity, WorklogEntity, GetWorklogsResponse } from '../api/api'
+import api, { WorklogEntity, GetWorklogsResponse } from '../api/api'
 import * as timeParser from './timeParser'
 import { ParseResult, Interval } from './timeParser'
 import time from '../time'
@@ -27,9 +27,10 @@ export type AddWorklogInput = {
 export type Worklog = {
     id: string,
     interval?: Interval,
+    issueId: string,
     issueKey: string,
     duration: string,
-    description: string
+    description: string,
     link: string
 }
 
@@ -42,7 +43,7 @@ export type UserWorklogs = {
 export default {
 
     async addWorklog(input: AddWorklogInput): Promise<Worklog> {
-        await checkToken()
+        await checkTokens()
         const referenceDate = parseWhenArg(time.now(), input.when)
         const parseResult = timeParser.parse(input.durationOrInterval, referenceDate)
         if (parseResult == null) {
@@ -51,32 +52,34 @@ export default {
         if (parseResult.seconds <= 0) {
             throw Error('Error. Minutes worked must be larger than 0.')
         }
-        const issueKey = await aliases.getIssueKey(input.issueKeyOrAlias) ?? input.issueKeyOrAlias
+        const issueKey = (await aliases.getIssueKey(input.issueKeyOrAlias) ?? input.issueKeyOrAlias).toUpperCase()
+        const issueId = await api.getIssueId(issueKey)
         const worklogEntity = await api.addWorklog({
-            issueKey: issueKey,
+            issueId: issueId,
             timeSpentSeconds: parseResult.seconds,
             startDate: format(referenceDate, DATE_FORMAT),
             startTime: startTime(parseResult, input.startTime, referenceDate),
             description: input.description,
             remainingEstimateSeconds: remainingEstimateSeconds(referenceDate, input.remainingEstimate)
         })
-        return toWorklog(worklogEntity)
+        return toWorklog(worklogEntity, { [worklogEntity.issue.id]: issueKey })
     },
 
     async deleteWorklog(worklogIdInput: string): Promise<Worklog> {
-        await checkToken()
+        await checkTokens()
         const worklogId = parseInt(worklogIdInput)
         if (!Number.isInteger(worklogId)) {
             throw Error('Error. Worklog id should be an integer number.')
         }
         const worklogEntity = await api.getWorklog(worklogId)
-        const worklog = toWorklog(worklogEntity)
+        const issueKey = await api.getIssueKey(worklogEntity.issue.id)
+        const worklog = toWorklog(worklogEntity, { [worklogEntity.issue.id]: issueKey })
         await api.deleteWorklog(worklogId)
         return worklog
     },
 
     async getUserWorklogs(when?: string): Promise<UserWorklogs> {
-        await checkToken()
+        await checkTokens()
         const credentials = await authenticator.getCredentials()
         const now = time.now()
         const date = parseWhenArg(now, when)
@@ -94,6 +97,7 @@ export default {
             formattedDate,
             credentials.accountId
         )
+
         return { worklogs, date, scheduleDetails }
     }
 }
@@ -111,27 +115,34 @@ function remainingEstimateSeconds(referenceDate: Date, remainingEstimate?: strin
 
 async function generateWorklogs(worklogsResponse: GetWorklogsResponse, formattedDate: string): Promise<Worklog[]> {
     const credentials = await authenticator.getCredentials()
+
+    const uniqueIssueIds = [...new Set(worklogsResponse.results.map(worklog => worklog.issue.id))]
+    const issueKeys = await Promise.all(uniqueIssueIds.map(issueId => api.getIssueKey(issueId)))
+    const issueIdToKey = Object.fromEntries(uniqueIssueIds.map((id, index) => [id, issueKeys[index]]))
+
     return worklogsResponse.results
         .filter((e: WorklogEntity) => e.author.accountId === credentials.accountId && e.startDate === formattedDate)
-        .map((e: WorklogEntity) => toWorklog(e))
+        .map((e: WorklogEntity) => toWorklog(e, issueIdToKey))
 }
 
-function toWorklog(entity: WorklogEntity) {
+function toWorklog(entity: WorklogEntity, issueIdToKey: Record<string, string>) {
     const referenceDate = fnsParse(entity.startDate, DATE_FORMAT, time.now())
     return {
         id: entity.tempoWorklogId,
         interval: timeParser.toInterval(entity.timeSpentSeconds, entity.startTime, referenceDate) ?? undefined,
-        issueKey: entity.issue.key,
+        issueId: entity.issue.id,
         duration: timeParser.toDuration(entity.timeSpentSeconds) ?? 'unknown',
         description: entity.description,
-        link: generateLink(entity.issue)
+        issueKey: issueIdToKey[entity.issue.id],
+        link: generateIssueLink(issueIdToKey[entity.issue.id], entity.issue.self)
     }
 }
 
-async function checkToken() {
-    const isTokenSet = await authenticator.hasTempoToken()
-    if (!isTokenSet) {
-        throw Error('Tempo token not set. Setup tempomat by `tempo setup` command.')
+async function checkTokens() {
+    const isTempoTokenSet = await authenticator.hasTempoToken()
+    const isAtlassianTokenSet = await authenticator.hasAtlassianToken()
+    if (!isTempoTokenSet || !isAtlassianTokenSet) {
+        throw Error('This tool is not configured. Set up tempomat by `tempo setup` command.')
     }
 }
 
@@ -173,7 +184,7 @@ function parseStartTime(startTime: string, referenceDate: Date): string {
     }
 }
 
-function generateLink(issue: IssueEntity): string {
-    const url = new URL(issue.self)
-    return `https://${url.hostname}/browse/${issue.key}`
+function generateIssueLink(issueKey: string, self: string): string {
+    const url = new URL(self)
+    return `https://${url.hostname}/browse/${issueKey}`
 }

@@ -1,4 +1,4 @@
-import { Command, flags } from '@oclif/command'
+import { Command, Flags } from '@oclif/core'
 import { appName } from '../../appName'
 import tempo from '../../tempo'
 import globalFlags from '../../globalFlags'
@@ -11,13 +11,13 @@ export default class List extends Command {
     ]
 
     static flags = {
-        help: flags.help({ char: 'h' }),
-        debug: flags.boolean()
+        help: Flags.help({ char: 'h' }),
+        debug: Flags.boolean()
     }
 
     async run() {
-        const { flags } = this.parse(List)
+        const { flags } = await this.parse(List)
         globalFlags.debug = flags.debug
-        tempo.listAliases()
+        await tempo.listAliases()
     }
 }

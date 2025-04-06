@@ -30,7 +30,7 @@ function generateWorklogHeaders(verbose: boolean) {
         { content: chalk.bold.greenBright('issue'), hAlign: 'right' },
         { content: chalk.bold.greenBright('duration'), hAlign: 'right' },
         chalk.bold.greenBright('description'),
-        chalk.bold.greenBright('task url')
+        chalk.bold.greenBright('issue url')
     ]
     if (!verbose) {
         headers.splice(headers.length - COLUMNS_TO_REMOVE, COLUMNS_TO_REMOVE)

@@ -1,4 +1,4 @@
-import { Command, flags } from '@oclif/command'
+import { Command, Flags, Args } from '@oclif/core'
 import { appName } from '../appName'
 import { trimIndent } from '../trimIndent'
 import tempo from '../tempo'
@@ -19,24 +19,25 @@ export default class List extends Command {
     static aliases = ['ls']
 
     static flags = {
-        help: flags.help({ char: 'h' }),
-        debug: flags.boolean(),
-        verbose: flags.boolean({
+        help: Flags.help({ char: 'h' }),
+        debug: Flags.boolean(),
+        verbose: Flags.boolean({
             char: 'v',
             description: 'verbose output with description and task link'
         })
     }
 
-    static args = [{
-        name: 'when',
-        description: trimIndent(`date to fetch worklogs, defaulted to today
+    static args = {
+        when: Args.string({
+            description: trimIndent(`date to fetch worklogs, defaulted to today
     * date in YYYY-MM-DD format
     * y as yesterday`),
-        required: false
-    }]
+            required: false
+        })
+    }
 
     async run() {
-        const { args, flags } = this.parse(List)
+        const { args, flags } = await this.parse(List)
         globalFlags.debug = flags.debug
         await tempo.listUserWorklogs(args.when, flags.verbose)
     }

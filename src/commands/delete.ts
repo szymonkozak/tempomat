@@ -1,4 +1,4 @@
-import { Command, flags } from '@oclif/command'
+import { Command, Flags, Args } from '@oclif/core'
 import { appName } from '../appName'
 import tempo from '../tempo'
 import globalFlags from '../globalFlags'
@@ -17,21 +17,20 @@ export default class Delete extends Command {
     static aliases = ['d']
 
     static flags = {
-        help: flags.help({ char: 'h' }),
-        debug: flags.boolean()
+        help: Flags.help({ char: 'h' }),
+        debug: Flags.boolean()
     }
 
-    static args = [
-        {
-            name: 'worklog_id',
+    static args = {
+        worklog_id: Args.string({
             description: 'worklog ids to delete, like 123456',
             required: true
-        }
-    ]
+        })
+    }
 
     async run() {
-        const { argv, flags } = this.parse(Delete)
+        const { args, flags } = await this.parse(Delete)
         globalFlags.debug = flags.debug
-        await tempo.deleteWorklogs(argv)
+        await tempo.deleteWorklogs([args.worklog_id])
     }
 }

@@ -1,4 +1,4 @@
-import { Command, flags } from '@oclif/command'
+import { Command, Flags, Args } from '@oclif/core'
 import { appName } from '../appName'
 import { trimIndent } from '../trimIndent'
 import tempo from '../tempo'
@@ -27,44 +27,32 @@ export default class Log extends Command {
     static aliases = ['l']
 
     static flags = {
-        help: flags.help({ char: 'h' }),
-        debug: flags.boolean(),
-        description: flags.string({
-            char: 'd',
-            description: 'worklog description'
+        help: Flags.help({ char: 'h' }),
+        debug: Flags.boolean(),
+        description: Flags.string({ char: 'd', description: 'description for worklog' }),
+        start: Flags.string({ char: 's', description: 'start time (HH:mm format), used when the input is a duration' }),
+        'remaining-estimate': Flags.string({ char: 'r', description: 'remaining estimate' })
+    }
+
+    static args = {
+        issue_key_or_alias: Args.string({
+            description: 'issue key or alias',
+            required: true
         }),
-        start: flags.string({
-            char: 's',
-            description: 'start time (HH:mm format), used when the input is a duration'
+        duration_or_interval: Args.string({
+            description: 'worklog duration (e.g 15m) or interval (e.g 11:30-14)',
+            required: true
         }),
-        'remaining-estimate': flags.string({
-            char: 'r',
-            description: 'remaining estimate'
+        when: Args.string({
+            description: trimIndent(`date to add worklog, defaulted to today
+    * date in YYYY-MM-DD format
+    * y as yesterday`),
+            required: false
         })
     }
 
-    static args = [
-        {
-            name: 'issue_key_or_alias',
-            description: 'issue key, like abc-123 or alias',
-            required: true
-        },
-        {
-            name: 'duration_or_interval',
-            description: 'worklog duration (e.g 15m) or interval (e.g 11:30-14)',
-            required: true
-        },
-        {
-            name: 'when',
-            description: trimIndent(`date to add worklog, defaulted to today
-      * date in YYYY-MM-DD format
-      * y as yesterday`),
-            required: false
-        }
-    ]
-
     async run() {
-        const { args, flags } = this.parse(Log)
+        const { args, flags } = await this.parse(Log)
         globalFlags.debug = flags.debug
         await tempo.addWorklog({
             issueKeyOrAlias: args.issue_key_or_alias,
