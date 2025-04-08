@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to Semantic Versioning.
 
-## [2.0.0] - Unreleased yet
+## [2.0.0] - 2025-04-08
 
 ### Changed
 - Migrated from Tempo API v3 to v4
