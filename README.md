@@ -23,7 +23,7 @@ Save time, it's much easier and faster to log time and browse worklogs using tem
 
 ## Usage
 ```
-$ npm install -g tempomat@beta
+$ npm install -g tempomat
 
 $ tempo setup
 
@@ -121,7 +121,7 @@ EXAMPLES
   $ tempo alias:delete lunch
 ```
 
-_See code: [src/commands/alias/delete.ts](https://github.com/szymonkozak/tempomat/blob/v2.0.0-beta.0/src/commands/alias/delete.ts)_
+_See code: [src/commands/alias/delete.ts](https://github.com/szymonkozak/tempomat/blob/v2.0.0/src/commands/alias/delete.ts)_
 
 ## `tempo alias:list`
 
@@ -142,7 +142,7 @@ EXAMPLES
   $ tempo alias:list
 ```
 
-_See code: [src/commands/alias/list.ts](https://github.com/szymonkozak/tempomat/blob/v2.0.0-beta.0/src/commands/alias/list.ts)_
+_See code: [src/commands/alias/list.ts](https://github.com/szymonkozak/tempomat/blob/v2.0.0/src/commands/alias/list.ts)_
 
 ## `tempo alias:set ALIAS ISSUE_KEY`
 
@@ -167,7 +167,7 @@ EXAMPLES
   $ tempo alias:set lunch abc-123
 ```
 
-_See code: [src/commands/alias/set.ts](https://github.com/szymonkozak/tempomat/blob/v2.0.0-beta.0/src/commands/alias/set.ts)_
+_See code: [src/commands/alias/set.ts](https://github.com/szymonkozak/tempomat/blob/v2.0.0/src/commands/alias/set.ts)_
 
 ## `tempo autocomplete [SHELL]`
 
@@ -222,7 +222,7 @@ EXAMPLES
   $ tempo delete 123456 123457
 ```
 
-_See code: [src/commands/delete.ts](https://github.com/szymonkozak/tempomat/blob/v2.0.0-beta.0/src/commands/delete.ts)_
+_See code: [src/commands/delete.ts](https://github.com/szymonkozak/tempomat/blob/v2.0.0/src/commands/delete.ts)_
 
 ## `tempo help [COMMAND]`
 
@@ -277,7 +277,7 @@ EXAMPLES
   $ tempo list -v
 ```
 
-_See code: [src/commands/list.ts](https://github.com/szymonkozak/tempomat/blob/v2.0.0-beta.0/src/commands/list.ts)_
+_See code: [src/commands/list.ts](https://github.com/szymonkozak/tempomat/blob/v2.0.0/src/commands/list.ts)_
 
 ## `tempo log ISSUE_KEY_OR_ALIAS DURATION_OR_INTERVAL [WHEN]`
 
@@ -324,7 +324,7 @@ EXAMPLES
   $ tempo log abc-123 1h15m -s 9
 ```
 
-_See code: [src/commands/log.ts](https://github.com/szymonkozak/tempomat/blob/v2.0.0-beta.0/src/commands/log.ts)_
+_See code: [src/commands/log.ts](https://github.com/szymonkozak/tempomat/blob/v2.0.0/src/commands/log.ts)_
 
 ## `tempo setup`
 
@@ -341,7 +341,7 @@ EXAMPLES
   $ tempo setup
 ```
 
-_See code: [src/commands/setup.ts](https://github.com/szymonkozak/tempomat/blob/v2.0.0-beta.0/src/commands/setup.ts)_
+_See code: [src/commands/setup.ts](https://github.com/szymonkozak/tempomat/blob/v2.0.0/src/commands/setup.ts)_
 
 ## `tempo tracker:delete ISSUE_KEY_OR_ALIAS`
 
@@ -365,7 +365,7 @@ EXAMPLES
   $ tempo tracker:delete abc-123
 ```
 
-_See code: [src/commands/tracker/delete.ts](https://github.com/szymonkozak/tempomat/blob/v2.0.0-beta.0/src/commands/tracker/delete.ts)_
+_See code: [src/commands/tracker/delete.ts](https://github.com/szymonkozak/tempomat/blob/v2.0.0/src/commands/tracker/delete.ts)_
 
 ## `tempo tracker:list`
 
@@ -386,7 +386,7 @@ EXAMPLES
   $ tempo tracker:list
 ```
 
-_See code: [src/commands/tracker/list.ts](https://github.com/szymonkozak/tempomat/blob/v2.0.0-beta.0/src/commands/tracker/list.ts)_
+_See code: [src/commands/tracker/list.ts](https://github.com/szymonkozak/tempomat/blob/v2.0.0/src/commands/tracker/list.ts)_
 
 ## `tempo tracker:pause ISSUE_KEY_OR_ALIAS`
 
@@ -414,7 +414,7 @@ EXAMPLES
   $ tempo pause abc-123
 ```
 
-_See code: [src/commands/tracker/pause.ts](https://github.com/szymonkozak/tempomat/blob/v2.0.0-beta.0/src/commands/tracker/pause.ts)_
+_See code: [src/commands/tracker/pause.ts](https://github.com/szymonkozak/tempomat/blob/v2.0.0/src/commands/tracker/pause.ts)_
 
 ## `tempo tracker:resume ISSUE_KEY_OR_ALIAS`
 
@@ -439,7 +439,7 @@ EXAMPLES
   $ tempo resume abc-123
 ```
 
-_See code: [src/commands/tracker/resume.ts](https://github.com/szymonkozak/tempomat/blob/v2.0.0-beta.0/src/commands/tracker/resume.ts)_
+_See code: [src/commands/tracker/resume.ts](https://github.com/szymonkozak/tempomat/blob/v2.0.0/src/commands/tracker/resume.ts)_
 
 ## `tempo tracker:start ISSUE_KEY_OR_ALIAS`
 
@@ -470,7 +470,7 @@ EXAMPLES
   $ tempo tracker:start abc-123 -d "worklog description"
 ```
 
-_See code: [src/commands/tracker/start.ts](https://github.com/szymonkozak/tempomat/blob/v2.0.0-beta.0/src/commands/tracker/start.ts)_
+_See code: [src/commands/tracker/start.ts](https://github.com/szymonkozak/tempomat/blob/v2.0.0/src/commands/tracker/start.ts)_
 
 ## `tempo tracker:stop ISSUE_KEY_OR_ALIAS`
 
@@ -501,7 +501,7 @@ EXAMPLES
   $ tempo tracker:stop abc-123 -d "worklog description"
 ```
 
-_See code: [src/commands/tracker/stop.ts](https://github.com/szymonkozak/tempomat/blob/v2.0.0-beta.0/src/commands/tracker/stop.ts)_
+_See code: [src/commands/tracker/stop.ts](https://github.com/szymonkozak/tempomat/blob/v2.0.0/src/commands/tracker/stop.ts)_
 <!-- commandsstop -->
 
 ## Contributing
