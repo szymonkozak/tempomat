@@ -1,7 +1,9 @@
 import authenticator from './config/authenticator'
 import worklogs, { AddWorklogInput } from './worklogs/worklogs'
+import timesheets, { SubmitTimesheetInput } from './timesheets/timesheets'
 import prompts from './config/prompts'
 import * as worklogsTable from './worklogs/worklogsTable'
+import * as reviewersTable from './timesheets/reviewersTable'
 import chalk from 'chalk'
 import { appName } from './appName'
 import { trimIndent } from './trimIndent'
@@ -190,6 +192,25 @@ export default {
                 const table = await trackersTable.render(tracker, now)
                 console.log(table.toString())
             }
+        })
+    },
+
+    async submitTimesheet(input: SubmitTimesheetInput): Promise<boolean> {
+        return execute(async () => {
+            cli.action.start('Submitting timesheet')
+            const timesheet = await timesheets.submitTimesheet(input)
+            cli.action.stop('Done.')
+            console.log(chalk.greenBright(`Successfully submitted timesheet to ${timesheet.reviewer.accountId} for approval.`))
+        })
+    },
+
+    async getReviewers(): Promise<boolean> {
+        return execute(async () => {
+            cli.action.start('Getting reviewers')
+            const reviewers = await timesheets.getReviewers()
+            cli.action.stop('Done.')
+            const table = await reviewersTable.render(reviewers)
+            console.log(table.toString())
         })
     }
 }
