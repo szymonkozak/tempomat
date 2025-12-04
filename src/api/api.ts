@@ -69,13 +69,7 @@ export default {
 
     async addWorklog(request: AddWorklogRequest): Promise<WorklogEntity> {
         const credentials = await authenticator.getCredentials()
-        const { issueId, ...rest } = request
-        const body = {
-            ...rest,
-            issueId: issueId,
-            issue: { id: issueId },
-            authorAccountId: credentials.accountId
-        }
+        const body = { ...request, authorAccountId: credentials.accountId }
         return execute(async () => {
             const response = await tempoAxios.post('/worklogs', body)
             debugLog(response)
