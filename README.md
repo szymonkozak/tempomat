@@ -510,10 +510,9 @@ If you'd like to contribute to tempomat, please follow these steps:
 
 1. Open an issue describing the changes you plan to make
 2. Wait for approval before starting development
-3. Once approved, you can set up the project locally:
+3. Once approved, you can fork the repo, clone it and set up the project locally:
 
 ```bash
-git clone https://github.com/szymonkozak/tempomat.git
 cd tempomat
 npm install
 npm run build
